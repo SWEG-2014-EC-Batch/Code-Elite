@@ -7,7 +7,7 @@ int main(){
     float BMI;
     char gender;
     string X;
-    cout<<"Enter 1 if you want the BMI calculator for a single person.\nEnter 2 if you want the BMI calculator for a limited person.\nEnter 3 if you want the BMI calculator for unlimmited number of Person until you want to stop,to stop the program enter STOP.";
+    cout<<"Enter 1 if you want the BMI calculator for a single person.\nEnter 2 if you want the BMI calculator for a limited person.\nEnter 3 if you want the BMI calculator for unlimmited number of Person until you want to stop.";
     cin>>menu;
 switch (menu)
 {
