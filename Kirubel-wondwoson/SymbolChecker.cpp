@@ -1,3 +1,4 @@
+//This is a symbol checker program that prompts the user to input any of the characters in their keyboard and output the type of the character that the user enters
 #include<iostream>
 using namespace std;
 int main(){
