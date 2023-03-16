@@ -3,8 +3,8 @@
 #include<ctype.h>
 using namespace std;
 int main(){
-    int weight,height,menu,no_of_person,n;
-    float BMI;
+    int menu,no_of_person,n;
+    float weight,height,BMI;
     char gender;
     string X;
     cout<<"Enter 1 if you want the BMI calculator for a single person.\nEnter 2 if you want the BMI calculator for a limited person.\nEnter 3 if you want the BMI calculator for unlimmited number of Person until you want to stop.";
