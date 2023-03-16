@@ -1,3 +1,4 @@
+/*This is a program that calculates the total mark and grade of a student by prompting the user's Quiz,test,project,Assignment and final result */
 #include<iostream>
 using namespace std;
 int main(){
