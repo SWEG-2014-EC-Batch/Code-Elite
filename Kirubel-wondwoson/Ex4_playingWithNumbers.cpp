@@ -1,7 +1,8 @@
 #include<iostream>
 using namespace std;
 int main()
-{/* exercise 1a
+{
+    /* exercise 1a
     int x,r;
     cout<<"Enter a number: ";
     cin>>x;
@@ -42,12 +43,9 @@ while (x>0)
    if(x%2==0) 
     {
      x*=x;
-     
     }   
     x/=10;
-}
-  
+}  
 cout<<x;
-*/
-   
+*/   
 }
