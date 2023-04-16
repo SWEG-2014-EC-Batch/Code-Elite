@@ -13,5 +13,19 @@ int main(){
     }
     
     n = int(letter) - 64;
+    
+    for(int i=0; i<(2*n + 1); ++i){ 
+        if(i<n){ 
+            for(int j=0; j<=i; ++j){ 
+                cout<<char(65+j)<<' ';
+            }
+            for(int j=i+1; j<(2*n - i); ++j){ 
+                cout<<"  ";
+            }
+            for(int j=(2*n - i); j<(2*n + 1); ++j){
+                cout<<char(65 + 2*n - j)<<' ';
+            }
+        }
+    }   
     return 0;
 }
