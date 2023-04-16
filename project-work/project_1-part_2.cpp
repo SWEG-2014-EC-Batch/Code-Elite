@@ -26,6 +26,15 @@ int main(){
                 cout<<char(65 + 2*n - j)<<' ';
             }
         }
+        else if(i==n){
+            for(int j=0; j<i; ++j){ 
+                cout<<char(65+j)<<' ';
+            }
+            cout<<"J ";
+            for(int j=i+1; j<(2*n + 1); ++j){
+                cout<<char(65 + 2*n - j)<<' ';
+            }
+        }       
     }   
     return 0;
 }
