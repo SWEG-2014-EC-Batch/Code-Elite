@@ -141,6 +141,106 @@ int main(){
         avg[i] = totalMark[i] / temp[i];
         cgpa[i] = totalPoint[i] / totalCrHr[i];
     }
+    orders = new int[numStud];
+    lastId = studId[0];
+    for(int i=0; i<numStud; ++i){
+        if(count2[i] == 3){
+            continue;
+        }
+        if(lastId <= studId[i]){
+            lastId = studId[i];
+            orders[numStud-1] = i;
+        }
+    }
+    for(int i=0; i<numStud; ++i){
+        if(count2[i] == 3){
+            continue;
+        }
+        orderId = lastId;
+        for(int j=0; j<numStud; ++j){
+            int count=0;
+            for(int k=0; k<i; ++k){
+                if(j == orders[k]){
+                    count += 1;
+                    break;
+                }
+            }
+            if(count==1){
+                continue;
+            }
+            if(orderId >= studId[j]){
+                orderId = studId[j];
+                orders[i] = j;
+            }
+        }
+        
+    }
+
+    cout<<endl<<"    ";
+    for(int i=0; i<numCourse; ++i){
+        cout<<"        ";
+    }
+    cout<<"STUDENT'S MArk SHEET"<<endl;
+
+    cout<<"______________";
+    for(int i=0; i<numCourse; ++i){
+        cout<<"________________";
+    }
+    cout<<"______________________"<<endl;
+
+    cout<<" Stud. ID       ";
+    for(int i=0; i<numCourse; ++i){
+        cout<<"    "<<subjectName[i]<<"        ";
+    }
+    cout<<"Average    CGPA"<<endl;
+
+    cout<<"              ";
+    for(int i=0; i<numCourse; ++i){
+        cout<<"________________";
+    }
+    cout<<endl;
+
+    cout<<"                ";
+    for(int i=0; i<numCourse; ++i){
+        cout<<"Mark : Grade    ";
+    }
+    cout<<endl;
+
+    cout<<"______________";
+    for(int i=0; i<numCourse; ++i){
+        cout<<"________________";
+    }
+    cout<<"______________________"<<endl;
+
+    for(int i=0; i<numStud; ++i){
+        if(count2[orders[i]] == 3){
+            continue;
+        }
+        cout<<' '<<studId[orders[i]]<<"   ";
+        for(int j=0; j<numCourse; ++j){
+            if(gradeMark[orders[i]][j] == "NG"){
+                cout<<"    "<<gradeMark[orders[i]][j]<<" : "<<gradeMark[orders[i]][j]<<"     ";
+                continue;
+            }
+            cout<<"    "<<subjectMark[orders[i]][j]<<" : "<<gradeMark[orders[i]][j]<<"     ";
+        }
+        if(temp[orders[i]] == 0){
+            cout<<"    --        --"<<endl<<endl;
+            continue;
+        }
+        cout<<"    "<<avg[orders[i]]<<"        "<<cgpa[orders[i]]<<endl;
+        if(i<numStud-1){
+            cout<<endl;
+        }
+    }
+
+    cout<<"______________";
+    for(int i=0; i<numCourse; ++i){
+        cout<<"________________";
+    }
+    cout<<"______________________"<<endl<<endl;
+    delete []orders;
+
     
     return 0;
 }
