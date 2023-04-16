@@ -25,8 +25,8 @@ int main(){
             for(int j=(2*n - i); j<(2*n + 1); ++j){
                 cout<<char(65 + 2*n - j)<<' ';
             }
-           cout<<endl;
         }
+        
         else if(i==n){
             for(int j=0; j<i; ++j){ 
                 cout<<char(65+j)<<' ';
@@ -35,7 +35,21 @@ int main(){
             for(int j=i+1; j<(2*n + 1); ++j){
                 cout<<char(65 + 2*n - j)<<' ';
             }
-        }       
+        }
+        
+        else{
+            for(int j=0; j<(2*n + 1 - i); ++j){ 
+                cout<<char(65+j)<<' ';
+            }
+            for(int j=(2*n + 1 - i); j<i; ++j){ 
+                cout<<"  ";
+            }
+            for(int j=i; j<(2*n + 1); ++j){
+                cout<<char(65 + 2*n - j)<<' ';
+            }
+        }
+        
+        cout<<endl;
     }   
     return 0;
 }
