@@ -25,6 +25,7 @@ int main(){
             for(int j=(2*n - i); j<(2*n + 1); ++j){
                 cout<<char(65 + 2*n - j)<<' ';
             }
+           cout<<endl;
         }
         else if(i==n){
             for(int j=0; j<i; ++j){ 
