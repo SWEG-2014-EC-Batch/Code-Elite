@@ -24,6 +24,7 @@ int main(){
         totalMark[i] = 0;
         temp[i] = 0;
 
+        //declaring dynamic 2D arrays
         subjectMark[i] = new float[numCourse];
         point[i] = new float[numCourse];
         gradeMark[i] = new string[numCourse];
@@ -134,13 +135,14 @@ int main(){
             totalCrHr[i] += crHr[j];
         }
 
-        if(temp[i] == 0){
+        if(temp[i] == 0){  //if all grades are NG
             continue;
         }
 
         avg[i] = totalMark[i] / temp[i];
         cgpa[i] = totalPoint[i] / totalCrHr[i];
     }
+    //ordering student Ids alphabetically (in ascending order)
     orders = new int[numStud];
     lastId = studId[0];
     for(int i=0; i<numStud; ++i){
@@ -176,6 +178,7 @@ int main(){
         
     }
 
+    //displaying the upper borders and titles of the table
     cout<<endl<<"    ";
     for(int i=0; i<numCourse; ++i){
         cout<<"        ";
@@ -212,6 +215,7 @@ int main(){
     }
     cout<<"______________________"<<endl;
 
+    //displaying each row of the table in ascending order of student Ids
     for(int i=0; i<numStud; ++i){
         if(count2[orders[i]] == 3){
             continue;
@@ -234,12 +238,14 @@ int main(){
         }
     }
 
+    //displaying the lower borders of the table
     cout<<"______________";
     for(int i=0; i<numCourse; ++i){
         cout<<"________________";
     }
     cout<<"______________________"<<endl<<endl;
     delete []orders;
+    
     int count3 = 0;
     do{
         cout<<"Menu\nEnter 'A' to search for the result of a specific student\nEnter 'B' to get the Top n results based on CGPA\nEnter 'C' to get the Top n results based on Average\nEnter 'D' to get the Top n results based on a specific subject\nEnter 'E' to End the program\nYour choice: ";
@@ -320,7 +326,7 @@ int main(){
                         cout<<"\nThe percentage is out of range\n"<<endl;
                         break;
                     }
-                    n=percent*numStud/100;
+                    n=percent*numStud/100;  //changing percent to n
                 }
                 else{
                     cout<<"Enter the value of n: ";
@@ -331,6 +337,7 @@ int main(){
                     }
                 }
                 
+                //finding top n students in descending order of CGPA
                 orders = new int[n];
                 minValue = cgpa[0];
                 for(int i=0; i<numStud; ++i){
@@ -366,6 +373,7 @@ int main(){
                     
                 }
 
+                //displaying upper borders and titles of the table
                 cout<<" ";
                 for(int i=0; i<numCourse; ++i){
                     cout<<"        ";
@@ -407,6 +415,7 @@ int main(){
                 }
                 cout<<"______________________"<<endl;
 
+                //displaying top n students in descending order of CGPA
                 for(int i=0; i<n; ++i){
                     cout<<' '<<studId[orders[i]]<<"   ";
                     for(int j=0; j<numCourse; ++j){
@@ -426,6 +435,7 @@ int main(){
                     }
                 }
 
+                //displaying the lower borders of the table
                 cout<<"______________";
                 for(int i=0; i<numCourse; ++i){
                     cout<<"________________";
@@ -445,7 +455,7 @@ int main(){
                         cout<<"\nThe percentage is out of range\n"<<endl;
                         break;
                     }
-                    n=percent*numStud/100;
+                    n=percent*numStud/100;  //changing percent to n
                 }
                 else{
                     cout<<"Enter the value of n: ";
@@ -456,6 +466,7 @@ int main(){
                     }
                 }
 
+                //finding top n students in descending order of Average
                 orders = new int[n];
                 minValue = avg[0];
                 for(int i=0; i<numStud; ++i){
@@ -491,6 +502,7 @@ int main(){
                     
                 }
 
+                //displaying upper borders and titles of the table
                 cout<<"   ";
                 for(int i=0; i<numCourse; ++i){
                     cout<<"        ";
@@ -532,6 +544,7 @@ int main(){
                 }
                 cout<<"______________________"<<endl;
 
+                //displaying top n students in descending order of Average
                 for(int i=0; i<n; ++i){
                     cout<<' '<<studId[orders[i]]<<"   ";
                     for(int j=0; j<numCourse; ++j){
@@ -551,6 +564,7 @@ int main(){
                     }
                 }
 
+                //displaying the lower borders of the table
                 cout<<"______________";
                 for(int i=0; i<numCourse; ++i){
                     cout<<"________________";
@@ -572,7 +586,7 @@ int main(){
                         cout<<"\nThe percentage is out of range\n"<<endl;
                         break;
                     }
-                    n=percent*numStud/100;
+                    n=percent*numStud/100;  //changing percent to n
                 }
                 else{
                     cout<<"Enter the value of n: ";
@@ -583,6 +597,7 @@ int main(){
                     }
                 }
                 orders = new int[n];
+                //storing the index of the course chosen
                 for(int i=0; i<numCourse; ++i){
                     if(count2[i] == 3){
                         continue;
@@ -599,6 +614,7 @@ int main(){
                     cout<<"\nInvalid course name.\n"<<endl;
                     break;
                 }
+                //finding top n students in descending order of the chosen course
                 minValue = subjectMark[0][subIndex];
                 for(int i=0; i<numStud; ++i){
                     if(count2[i] == 3){
@@ -633,6 +649,7 @@ int main(){
                     
                 }
 
+                //displaying upper borders and titles of the table
                 cout<<endl<<" ";
                 for(int i=0; i<numCourse; ++i){
                     cout<<"        ";
@@ -674,6 +691,7 @@ int main(){
                 }
                 cout<<"______________________"<<endl;
 
+                //displaying top n students in descending order of the chosen course
                 for(int i=0; i<n; ++i){
                     cout<<' '<<studId[orders[i]]<<"   ";
                     for(int j=0; j<numCourse; ++j){
@@ -693,6 +711,7 @@ int main(){
                     }
                 }
 
+                //displaying the lower borders of the table
                 cout<<"______________";
                 for(int i=0; i<numCourse; ++i){
                     cout<<"________________";
