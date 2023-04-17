@@ -15,6 +15,25 @@ int main(){
         accountBalance = 0;
         switch(menu){
             case 'A':
+                cout<<endl<<"Enter the principal: ";
+                cin>>principal;
+                cout<<"Enter the minimum interest rate(%): ";
+                cin>>minRate;
+                cout<<"Enter the maximum interest rate(%): ";
+                cin>>maxRate;
+                cout<<"Enter the number of years: ";
+                cin>>numYears;
+                if(principal<0 || minRate<0 || maxRate<0 || numYears<0){
+                    cout<<"Wrong value (negative numbers)."<<endl;
+                    break;
+                }
+                if(minRate>maxRate){
+                    cout<<"Wrong value (minimum rate is greater than maximum rate)"<<endl;
+                    break;
+                }
+                rate=(minRate+maxRate)/200;
+                accountBalance=principal*pow((1+rate),numYears);
+                cout<<"Your balance after "<<numYears<<" years is "<<accountBalance<<endl;
                 break;
 
             case 'B':
@@ -89,8 +108,6 @@ int main(){
                 }
                 cout<<"Your balance after "<<numYears<<" years is "<<accountBalance<<endl;
                 delete [] annualDeposit2;
-
-
                 break;
 
             case 'E':
