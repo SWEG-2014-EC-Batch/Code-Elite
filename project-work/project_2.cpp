@@ -240,7 +240,96 @@ int main(){
     }
     cout<<"______________________"<<endl<<endl;
     delete []orders;
+    int count3 = 0;
+    do{
+        cout<<"Menu\nEnter 'A' to search for the result of a specific student\nEnter 'B' to get the Top n results based on CGPA\nEnter 'C' to get the Top n results based on Average\nEnter 'D' to get the Top n results based on a specific subject\nEnter 'E' to End the program\nYour choice: ";
+        cin>>menu;
+        menu = toupper(menu);
 
+        int error = 0;
+        switch(menu){
+            case 'A':
+                cout<<"Enter the Id number: ";
+                cin>>searchId;
+                for(int i=0; i<numStud; ++i){
+                    if(count2[i] == 3){
+                        continue;
+                    }
+                    if(studId[i] == searchId){
+                        cout<<endl<<"______________";
+                        for(int i=0; i<numCourse; ++i){
+                            cout<<"________________";
+                        }
+                        cout<<"______________________"<<endl;
+                        cout<<" Stud. ID       ";
+                        for(int i=0; i<numCourse; ++i){
+                            cout<<"    "<<subjectName[i]<<"        ";
+                        }
+                        cout<<"Average    CGPA"<<endl;
+
+                        cout<<"              ";
+                        for(int i=0; i<numCourse; ++i){
+                            cout<<"________________";
+                        }
+                        cout<<endl;
+
+                        cout<<"                ";
+                        for(int i=0; i<numCourse; ++i){
+                            cout<<"Mark : Grade    ";
+                        }
+                        cout<<endl;
+
+                        cout<<"______________";
+                        for(int i=0; i<numCourse; ++i){
+                            cout<<"________________";
+                        }
+                        cout<<"______________________"<<endl;
+
+                        cout<<' '<<studId[i]<<"   ";
+                        for(int j=0; j<numCourse; ++j){
+                            if(gradeMark[i][j] == "NG"){
+                                cout<<"    "<<gradeMark[i][j]<<" : "<<gradeMark[i][j]<<"     ";
+                                continue;
+                            }
+                            cout<<"    "<<subjectMark[i][j]<<" : "<<gradeMark[i][j]<<"     ";
+                        }
+                        if(temp[i] == 0){
+                            cout<<"    --        --"<<endl<<endl;
+                        }
+                        cout<<"    "<<avg[i]<<"        "<<cgpa[i]<<endl;
+                        cout<<"______________";
+                        for(int j=0; j<numCourse; ++j){
+                            cout<<"________________";
+                        }
+                        cout<<"______________________"<<endl<<endl;
+                        break;
+                    }
+                    else if(i == numStud - 1){
+                        cout<<"\nThe ID could not be found.\n"<<endl;
+                    }
+                }
+                break;
+
+            case 'B':
+                break;
+
+            case 'C':
+                break;
+
+            case 'D':
+                break;
+
+            case 'E':
+            cout<<"\nThank you for using this program!!";
+                count3 = 3;
+                break;
+
+            default:
+                cout<<"\nYou entered wrong input.\n"<<endl;
+                count3 += 1;
+                break;
+        }
+    }while(count3<3);
     
     return 0;
 }
