@@ -561,6 +561,145 @@ int main(){
                 break;
 
             case 'D':
+                 cout<<"Enter the Subject name: ";
+                cin>>searchSub;
+                cout<<endl<<"Do you want the top n students or the top m\% students\nEnter '%' to get top students by percent and any other character for top n students: ";
+                cin>>menu2;
+                if(menu2=='%'){
+                    cout<<"Enter the percentage(0-100): ";
+                    cin>>percent;
+                    if(percent<0 || percent>100){
+                        cout<<"\nThe percentage is out of range\n"<<endl;
+                        break;
+                    }
+                    n=percent*numStud/100;
+                }
+                else{
+                    cout<<"Enter the value of n: ";
+                    cin>>n;
+                    if(n<0 || n>numStud){
+                        cout<<"\nn is out of range (0-"<<numStud<<")\n"<<endl;
+                        break;
+                    }
+                }
+                orders = new int[n];
+                for(int i=0; i<numCourse; ++i){
+                    if(count2[i] == 3){
+                        continue;
+                    }
+                    if(subjectName[i] == searchSub){
+                        subIndex = i;
+                        break;
+                    }
+                    else if(i==numCourse-1){
+                        error += 1;
+                    }
+                }
+                if(error!=0){
+                    cout<<"\nInvalid course name.\n"<<endl;
+                    break;
+                }
+                minValue = subjectMark[0][subIndex];
+                for(int i=0; i<numStud; ++i){
+                    if(count2[i] == 3){
+                        continue;
+                    }
+                    if(minValue >= subjectMark[i][subIndex]){
+                        minValue = subjectMark[i][subIndex];
+                        orders[n-1] = i;
+                    }
+                }
+                for(int i=0; i<n; ++i){
+                    if(count2[i] == 3){
+                        continue;
+                    }
+                    order = minValue;
+                    for(int j=0; j<numStud; ++j){
+                        int count=0;
+                        for(int k=0; k<i; ++k){
+                            if(j == orders[k]){
+                                count += 1;
+                                break;
+                            }
+                        }
+                        if(count==1){
+                            continue;
+                        }
+                        if(order <= subjectMark[j][subIndex]){
+                            order = subjectMark[j][subIndex];
+                            orders[i] = j;
+                        }
+                    }
+                    
+                }
+
+                cout<<endl<<" ";
+                for(int i=0; i<numCourse; ++i){
+                    cout<<"        ";
+                }
+                if(menu2=='%'){
+                    cout<<"Top "<<percent<<"\% based on "<<subjectName[subIndex]<<" result"<<endl;
+                }
+                else{
+                    cout<<"Top "<<n<<" based on "<<subjectName[subIndex]<<" result"<<endl;
+                }
+
+                cout<<"______________";
+                for(int i=0; i<numCourse; ++i){
+                    cout<<"________________";
+                }
+                cout<<"______________________"<<endl;
+
+                cout<<" Stud. ID       ";
+                for(int i=0; i<numCourse; ++i){
+                    cout<<"    "<<subjectName[i]<<"        ";
+                }
+                cout<<"Average    CGPA"<<endl;
+
+                cout<<"              ";
+                for(int i=0; i<numCourse; ++i){
+                    cout<<"________________";
+                }
+                cout<<endl;
+
+                cout<<"                ";
+                for(int i=0; i<numCourse; ++i){
+                    cout<<"Mark : Grade    ";
+                }
+                cout<<endl;
+
+                cout<<"______________";
+                for(int i=0; i<numCourse; ++i){
+                    cout<<"________________";
+                }
+                cout<<"______________________"<<endl;
+
+                for(int i=0; i<n; ++i){
+                    cout<<' '<<studId[orders[i]]<<"   ";
+                    for(int j=0; j<numCourse; ++j){
+                        if(gradeMark[orders[i]][j] == "NG"){
+                            cout<<"    "<<gradeMark[orders[i]][j]<<" : "<<gradeMark[orders[i]][j]<<"     ";
+                            continue;
+                        }
+                        cout<<"    "<<subjectMark[orders[i]][j]<<" : "<<gradeMark[orders[i]][j]<<"     ";
+                    }
+                    if(temp[orders[i]] == 0){
+                        cout<<"    --        --"<<endl<<endl;
+                        continue;
+                    }
+                    cout<<"    "<<avg[orders[i]]<<"        "<<cgpa[orders[i]]<<endl;
+                    if(i<n-1){
+                        cout<<endl;
+                    }
+                }
+
+                cout<<"______________";
+                for(int i=0; i<numCourse; ++i){
+                    cout<<"________________";
+                }
+                cout<<"______________________"<<endl<<endl;
+                delete []orders;
+               
                 break;
 
             case 'E':
