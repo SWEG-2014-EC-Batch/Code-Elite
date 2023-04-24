@@ -11,7 +11,7 @@ int main(){
     if(numStud<0 || numCourse<0){
         return 0;
     }
-    int subIndex , n , percent , *count2 = new int[numStud] , *orders;
+    int subIndex , n , percent , *count2 = new int[numStud] , *orders , fails;
     unsigned int *crHr = new unsigned int[numCourse];
     char menu , menu2;
     string *subjectName = new string[numCourse] , *studId = new string[numStud] , **gradeMark = new string*[numStud] , searchId , searchSub , lastId , orderId;
@@ -69,6 +69,7 @@ int main(){
         }while(error!=0 && count2[i]<3);
 
         if(count2[i] == 3){
+            fails+=1;
             continue;
         }
         for(int j=0; j<numCourse; ++j){
@@ -143,7 +144,7 @@ int main(){
         cgpa[i] = totalPoint[i] / totalCrHr[i];
     }
     //ordering student Ids alphabetically (in ascending order)
-    orders = new int[numStud];
+    orders = new int[numStud-fails];
     lastId = studId[0];
     for(int i=0; i<numStud; ++i){
         if(count2[i] == 3){
@@ -151,7 +152,7 @@ int main(){
         }
         if(lastId <= studId[i]){
             lastId = studId[i];
-            orders[numStud-1] = i;
+            orders[numStud-fails-1] = i;
         }
     }
     for(int i=0; i<numStud; ++i){
@@ -216,10 +217,7 @@ int main(){
     cout<<"______________________"<<endl;
 
     //displaying each row of the table in ascending order of student Ids
-    for(int i=0; i<numStud; ++i){
-        if(count2[orders[i]] == 3){
-            continue;
-        }
+    for(int i=0; i<numStud-fails; ++i){
         cout<<' '<<studId[orders[i]]<<"   ";
         for(int j=0; j<numCourse; ++j){
             if(gradeMark[orders[i]][j] == "NG"){
@@ -326,13 +324,13 @@ int main(){
                         cout<<"\nThe percentage is out of range\n"<<endl;
                         break;
                     }
-                    n=percent*numStud/100;  //changing percent to n
+                    n=percent*(numStud-fails)/100;  //changing percent to n
                 }
                 else{
                     cout<<"Enter the value of n: ";
                     cin>>n;
-                    if(n<0 || n>numStud){
-                        cout<<"\nn is out of range (0-"<<numStud<<")\n"<<endl;
+                    if(n<0 || n>numStud-fails){
+                        cout<<"\nn is out of range (0-"<<numStud-fails<<")\n"<<endl;
                         break;
                     }
                 }
@@ -350,11 +348,11 @@ int main(){
                     }
                 }
                 for(int i=0; i<n; ++i){
-                    if(count2[i] == 3){
-                        continue;
-                    }
                     order = minValue;
                     for(int j=0; j<numStud; ++j){
+                        if(count2[j] == 3){
+                            continue;
+                        }
                         int count=0;
                         for(int k=0; k<i; ++k){
                             if(j == orders[k]){
@@ -455,13 +453,13 @@ int main(){
                         cout<<"\nThe percentage is out of range\n"<<endl;
                         break;
                     }
-                    n=percent*numStud/100;  //changing percent to n
+                    n=percent*(numStud-fails)/100;  //changing percent to n
                 }
                 else{
                     cout<<"Enter the value of n: ";
                     cin>>n;
-                    if(n<0 || n>numStud){
-                        cout<<"\nn is out of range (0-"<<numStud<<")\n"<<endl;
+                    if(n<0 || n>numStud-fails){
+                        cout<<"\nn is out of range (0-"<<numStud-fails<<")\n"<<endl;
                         break;
                     }
                 }
@@ -479,11 +477,11 @@ int main(){
                     }
                 }
                 for(int i=0; i<n; ++i){
-                    if(count2[i] == 3){
-                        continue;
-                    }
                     order = minValue;
                     for(int j=0; j<numStud; ++j){
+                        if(count2[j] == 3){
+                            continue;
+                        }
                         int count=0;
                         for(int k=0; k<i; ++k){
                             if(j == orders[k]){
@@ -575,33 +573,10 @@ int main(){
                 break;
 
             case 'D':
-                 cout<<"Enter the Subject name: ";
+                cout<<"Enter the Subject name: ";
                 cin>>searchSub;
-                cout<<endl<<"Do you want the top n students or the top m\% students\nEnter '%' to get top students by percent and any other character for top n students: ";
-                cin>>menu2;
-                if(menu2=='%'){
-                    cout<<"Enter the percentage(0-100): ";
-                    cin>>percent;
-                    if(percent<0 || percent>100){
-                        cout<<"\nThe percentage is out of range\n"<<endl;
-                        break;
-                    }
-                    n=percent*numStud/100;  //changing percent to n
-                }
-                else{
-                    cout<<"Enter the value of n: ";
-                    cin>>n;
-                    if(n<0 || n>numStud){
-                        cout<<"\nn is out of range (0-"<<numStud<<")\n"<<endl;
-                        break;
-                    }
-                }
-                orders = new int[n];
                 //storing the index of the course chosen
                 for(int i=0; i<numCourse; ++i){
-                    if(count2[i] == 3){
-                        continue;
-                    }
                     if(subjectName[i] == searchSub){
                         subIndex = i;
                         break;
@@ -614,7 +589,27 @@ int main(){
                     cout<<"\nInvalid course name.\n"<<endl;
                     break;
                 }
+                cout<<endl<<"Do you want the top n students or the top m\% students\nEnter '%' to get top students by percent and any other character for top n students: ";
+                cin>>menu2;
+                if(menu2=='%'){
+                    cout<<"Enter the percentage(0-100): ";
+                    cin>>percent;
+                    if(percent<0 || percent>100){
+                        cout<<"\nThe percentage is out of range\n"<<endl;
+                        break;
+                    }
+                    n=percent*(numStud-fails)/100;  //changing percent to n
+                }
+                else{
+                    cout<<"Enter the value of n: ";
+                    cin>>n;
+                    if(n<0 || n>numStud-fails){
+                        cout<<"\nn is out of range (0-"<<numStud-fails<<")\n"<<endl;
+                        break;
+                    }
+                }
                 //finding top n students in descending order of the chosen course
+                orders = new int[n];
                 minValue = subjectMark[0][subIndex];
                 for(int i=0; i<numStud; ++i){
                     if(count2[i] == 3){
@@ -626,11 +621,11 @@ int main(){
                     }
                 }
                 for(int i=0; i<n; ++i){
-                    if(count2[i] == 3){
-                        continue;
-                    }
                     order = minValue;
                     for(int j=0; j<numStud; ++j){
+                        if(count2[j] == 3){
+                            continue;
+                        }
                         int count=0;
                         for(int k=0; k<i; ++k){
                             if(j == orders[k]){
