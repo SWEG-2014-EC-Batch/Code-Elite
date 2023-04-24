@@ -56,7 +56,7 @@ int main(){
                 cin>>studId[i];
             }
             if(studId[i].size() != 10){
-                count2[i] = 2;
+                count2[i] = 3;
             }
             for(int j=0; j<i; ++j){
                 if(studId[i] == studId[j]){
@@ -65,7 +65,9 @@ int main(){
                     break;
                 }
             }
-            count2[i]+=1;
+            if(error!=0){
+                count2[i]+=1;
+            }
         }while(error!=0 && count2[i]<3);
 
         if(count2[i] == 3){
