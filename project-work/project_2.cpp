@@ -11,7 +11,7 @@ int main(){
     if(numStud<0 || numCourse<0){
         return 0;
     }
-    int subIndex , n , percent , *count2 = new int[numStud] , *orders , fails;
+    int subIndex , n , percent , *count2 = new int[numStud] , *orders , fails=0;
     unsigned int *crHr = new unsigned int[numCourse];
     char menu , menu2;
     string *subjectName = new string[numCourse] , *studId = new string[numStud] , **gradeMark = new string*[numStud] , searchId , searchSub , lastId , orderId;
@@ -156,11 +156,11 @@ int main(){
         }
     }
     for(int i=0; i<numStud; ++i){
-        if(count2[i] == 3){
-            continue;
-        }
         orderId = lastId;
         for(int j=0; j<numStud; ++j){
+            if(count2[j] == 3){
+                continue;
+            }
             int count=0;
             for(int k=0; k<i; ++k){
                 if(j == orders[k]){
