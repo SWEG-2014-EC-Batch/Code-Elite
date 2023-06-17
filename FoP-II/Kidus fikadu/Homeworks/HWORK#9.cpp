@@ -14,21 +14,16 @@ void swap(int& x, int& y) {
 
 void refunction(int& a, int& b, int& c) {
 
-
-
-
 	if (b > a) {
 		if (c > b) {
 			swap(a, c);
-
 		}
-		else {
-			if (c > a) {
-				swap(a, c);
-			}
-			swap(b, a);
-
+	else {
+		if (c > a) {
+		swap(a, c);
 		}
+		swap(b, a);
+            }
 	}
 	if (a > b) {
 		if (c > b) {
@@ -36,13 +31,9 @@ void refunction(int& a, int& b, int& c) {
 				swap(a, c);
 			}
 			swap(b, c);
-
-		}
-
+              }
 	}
 	cout << "After : " << a << " " << b << " " << c << endl;
-
-
 }
 
 int main()
