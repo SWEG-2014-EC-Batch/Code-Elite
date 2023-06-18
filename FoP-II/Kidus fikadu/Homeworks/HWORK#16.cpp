@@ -41,7 +41,7 @@ int main() {
         
         for (int i = 0; i < 3; i++) {
             if (minutes > 24 || minutes < 0) {
-                cout << "enter the hour correctly\n";
+                cout << "enter the minuets correctly\n";
                 cin >> minutes;
             }
             else {
