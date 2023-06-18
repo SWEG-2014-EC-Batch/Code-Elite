@@ -12,6 +12,10 @@ int main(){
         int hours, minutes;
         char meridian = 'A';
         readTime(hours, minutes);
+        if(hours < 0 || hours > 23 || minutes < 0 || minutes > 59){
+            cout<<"Wrong input";
+            return 0;
+        }
         convert(hours, meridian);
         display(hours, minutes, meridian);
 
