@@ -1,4 +1,4 @@
-<img src="https://www.canva.com/design/DAFmn05vDTk/q7j8dhvRoMGBO16jHEKcPg/view?utm_content=DAFmn05vDTk&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink" alt="banner">
+<img src="https://github.com/Kad-19/Periodic-table.com/assets/100912644/dc7f3f62-6b8b-4814-a58c-81e1c9d35d5d" alt="banner">
 
 # Code-Elite
 
