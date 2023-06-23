@@ -9,3 +9,18 @@
 <p>
   We are a group of software engineering students at Addis Ababa Science And Technology University (2015-EC-Batch)
 </p>
+
+<P>
+  We are passionate about coding and are always looking for ways to improve our skills. We work together to create innovative solutions to complex problems and are committed to delivering high-quality code. We are known for our attention to detail, our ability to work under pressure, and our commitment to excellence. Members of Code Elite are constantly learning and growing, and they are always looking for new challenges to tackle.
+</P>
+
+##Previous projects
+
+##Currently working on
+
+##Currently learning
+
+###Connect with us:
+
+###Members:
+
