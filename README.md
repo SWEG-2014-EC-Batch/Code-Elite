@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/Kad-19/Periodic-table.com/assets/100912644/dc7f3f62-6b8b-4814-a58c-81e1c9d35d5d" alt="banner"></p>
+<img src="https://github.com/Kad-19/Periodic-table.com/assets/100912644/512d3f97-8830-4c3e-a127-e86f802c6fd6" alt="banner"></p>
 
 # Code-Elite
 
