@@ -16,6 +16,8 @@
 
 ##Previous projects
 
+blank
+
 ##Currently working on
 
 ##Currently learning
