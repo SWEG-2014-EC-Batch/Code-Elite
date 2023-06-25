@@ -35,10 +35,10 @@
 ### 🤝 Connect with us:
 
 ### Members:
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
+- <a href="https://github.com/Kad-19" target="_blank" rel="noreferrer">Kidus Asebe</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Kidus Berhane</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Kidus Hawoltu</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Kidus Fikadu</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Kirubel Legesse</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Kirubel Wo</a>
 
