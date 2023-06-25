@@ -14,16 +14,31 @@
   We are passionate about coding and are always looking for ways to improve our skills. We work together to create innovative solutions to complex problems and are committed to delivering high-quality code. We are known for our attention to detail, our ability to work under pressure, and our commitment to excellence. Members of Code Elite are constantly learning and growing, and they are always looking for new challenges to tackle. We don't just write code. We create solutions.
 </P>
 
-## Previous projects
+## 💼 Previous projects
 
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_1-part_1.cpp" target="_blank" rel="noreferrer">Bank account Calculator</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_1-part_2.cpp" target="_blank" rel="noreferrer">Pattern Generator</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
 
 ## 🔭 Currently working on
 
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_1-part_1.cpp" target="_blank" rel="noreferrer">Bank account Calculator</a>
+- Refactoring old projects
 
 ## 🌱 Currently learning
 
-### Connect with us:
+- Funcions (c++)
+- Memory management (c++)
+- User defined datatypes (c++)
+- File management (c++)
+- Standard Template Library (c++)
+
+### 🤝 Connect with us:
 
 ### Members:
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>
 
