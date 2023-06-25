@@ -34,11 +34,11 @@
 
 ### 🤝 Connect with us:
 
-### Members:
+## Members:
 - <a href="https://github.com/Kad-19" target="_blank" rel="noreferrer">Kidus Asebe</a>
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Kidus Berhane</a>
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Kidus Hawoltu</a>
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Kidus Fikadu</a>
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Kirubel Legesse</a>
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Kirubel Wo</a>
+- <a href="https://github.com/Kidusbk" target="_blank" rel="noreferrer">Kidus Berhane</a>
+- <a href="https://github.com/KidusHawoltu" target="_blank" rel="noreferrer">Kidus Hawoltu</a>
+- <a href="https://github.com/Kidusfikadu" target="_blank" rel="noreferrer">Kidus Fikadu</a>
+- <a href="https://github.com/Proffesorgreen" target="_blank" rel="noreferrer">Kirubel Legesse</a>
+- <a href="https://github.com/Kirubel-wondwoson" target="_blank" rel="noreferrer">Kirubel Wondwoson</a>
 
