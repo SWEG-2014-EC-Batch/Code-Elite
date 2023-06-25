@@ -17,9 +17,11 @@
 ## Previous projects
 
 
-## Currently working on
+## 🔭 Currently working on
 
-## Currently learning
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_1-part_1.cpp" target="_blank" rel="noreferrer">Bank account Calculator</a>
+
+## 🌱 Currently learning
 
 ### Connect with us:
 
