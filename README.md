@@ -32,9 +32,9 @@
 - File management (c++)
 - Standard Template Library (c++)
 
-### 🤝 Connect with us:
+## 🤝 Connect with us:
 
-## Members:
+### Members:
 - <a href="https://github.com/Kad-19" target="_blank" rel="noreferrer">Kidus Asebe</a>
 - <a href="https://github.com/Kidusbk" target="_blank" rel="noreferrer">Kidus Berhane</a>
 - <a href="https://github.com/KidusHawoltu" target="_blank" rel="noreferrer">Kidus Hawoltu</a>
