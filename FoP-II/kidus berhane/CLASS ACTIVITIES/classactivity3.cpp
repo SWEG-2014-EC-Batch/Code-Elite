@@ -1,51 +1,39 @@
-#include<iostream>
+#include <iostream>
+#include <math.h>
 using namespace std;
-
-int main()
-{
-    int resistance[5];
-    double power[5];
-    double current[5];
-    
-    for (int i = 0; i < 5; i++)
-    {
-       cout<<"enter a resistance ";
-       cin>> resistance;
-    }
-    currentcal(current);
-    powercal(current,power ,resistance);
-    
-
+void currentReader(double cur[], int size);
+void calculatePower(double res[], double cur[], double pwr[], int);
+void display(double*, double*, double*, int);
+double calcTotal
+int main(){
+    double resistance[] = {16, 27, 39, 56, 81}, current[5], power[5];
+    int num = 5;
+    currentReader(current, num);
+    calculatePower(resistance, current, power, num);
+    display(resistance, current, power, num);
     return 0;
 }
 
-void currentcal(double num1, double num2, double num3, double num4, double num5)
-{
-   
-    for (int i = 0; i < 5; i++)
-    {
-        cout<<"enter a current";
-        cin>> current;
+void currentReader(double cur[], int size){
+    for(int i = 0; i < size; ++i){
+        cout<<"Enter current "<<i+1<<": ";
+        cin>>cur[i];
     }
-void powercal(double current[5],int resistance[5])
-{
-    
-    for (int i = 0; i < 5; i++)
-    {
-        power[i]=resistance[i]* pow(current[i],2);
+}
+void calculatePower(double res[], double cur[], double pwr[], int size){
+    for(int i = 0; i < size; ++i){
+        pwr[i] = res[i] * pow(cur[i], 2);
     }
-void display(double current[5],double power[5],int resistance[5]);
-    
-
-
-
-
-
 }
-    
-    
-
-
-
-
+void display(double res[], double cur[], double pwr[], int size){
+    cout<<"\n_________________________________________________";
+    cout<<"\n Resistance\t|\tCurrent\t|\tPower";
+    cout<<"\n_________________________________________________";
+    for(int i = 0 ; i < size ; i++){
+        cout<<"\n|\t"<<res[i]<<"\t|\t"<<cur[i]<<"\t|\t"<<pwr[i]<<"\t|";
+    }
 }
+
+
+
+
