@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/Kad-19/Periodic-table.com/assets/100912644/69de6a7f-b93f-4a79-b3fc-509a15227dfc" alt="banner">
+<img src="https://github.com/SWEG-2015-EC-Batch/Code-Elite/issues/1#issue-1779389857" alt="banner">
 </p>
 
 <h1>
