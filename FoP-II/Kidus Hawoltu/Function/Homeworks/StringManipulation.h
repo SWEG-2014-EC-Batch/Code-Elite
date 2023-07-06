@@ -1,3 +1,5 @@
+#ifndef STRINGMANIPULATION_H
+#define STRINGMANIPULATION_H
 using namespace std;
 int stringlength(string str);  //returns the length of a string
 bool isVowel(char a);  //checks whether a character is vowel letter or not
@@ -115,3 +117,4 @@ string strToUpper(string str){
     }
     return upper;
 }
+#endif
