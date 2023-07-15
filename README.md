@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/SWEG-2015-EC-Batch/Code-Elite/issues/1#issue-1779389857" alt="banner">
+<img src="https://github.com/SWEG-2015-EC-Batch/Code-Elite/assets/100912644/031b2d4e-0ac2-407e-a61e-e6b802df0385" alt="banner">
 </p>
 
 <h1>
