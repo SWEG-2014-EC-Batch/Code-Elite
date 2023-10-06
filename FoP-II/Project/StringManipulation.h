@@ -1,0 +1,54 @@
+#ifndef STRINGMANIPULATION_H
+#define STRINGMANIPULATION_H
+
+#include <iostream>
+using namespace std;
+int stringlength(string str);  //returns the length of a string
+string strToLower(string str);  //returns the lower case version of a string
+string strToUpper(string str);  //returns the upper case version of a string
+string strConcat(string str1, string str2, int length1 = -1, int length2 = -1);  //concatenates the two strings and returns the resulting string
+
+int stringlength(string str){
+    int length = 0;
+    for(int i=0; str[i] != '\0'; ++i) length++;
+        
+    return length;
+}
+
+string strToLower(string str){
+    int length = stringlength(str);
+    char *lower = new char[length];
+
+    for(int i=0; i<length; ++i){
+        if(str[i]>='A' && str[i]<='Z') lower[i] = str[i] + 32;
+        else lower[i] = str[i];
+    }
+
+    return lower;
+}
+
+string strToUpper(string str){
+    int length = stringlength(str);
+    char *upper = new char[length];
+
+    for(int i=0; i<length; ++i){
+        if(str[i]>='a' && str[i]<='z') upper[i] = str[i] - 32;
+        else upper[i] = str[i];
+    }
+
+    return upper;
+}
+
+string strConcat(string str1, string str2, int length1, int length2){
+    if(length1 == -1 || length1 > stringlength(str1)) length1 = stringlength(str1);
+    if(length2 == -1 || length2 > stringlength(str2)) length2 = stringlength(str2);
+    
+    char *result = new char[length1 + length2];
+
+    for(int i = 0; i < length1; ++i) result[i] = str1[i];
+    for(int i = 0; i < length2; ++i) result[length1 + i] = str2[i];
+
+    return result;
+}
+
+#endif
