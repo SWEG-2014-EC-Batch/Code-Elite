@@ -87,12 +87,22 @@ template <typename T>
 void order(int*, int, map<int, T>, bool = true);  // orders the map in ascending or descending orders based on the map's values
 
 //Staff functions
+void search_stud();  // searches for students
+void search_by_course();  // searches for students who are registered to a given course
+void search_by_id();  // searches for a specific student using the student's id
+
+void search_course();  // searches for courses
+
 int manipulateStudentRecord();  // enables user to manipulate student record
 int updateExistingStudent();  // identifies which student record will be manipulated
 int updateStudent(Student&);  // modifies a given student record
 int recordNewStudent();  // adds a new student to student record
 
 int manipulateCourseRecord();  // enables user to manipulate course record
+int updateExistingCourse();  // identifies which course record will be manipulated
+int updateCourse(Course&);  // modifies a given course record
+int deleteCourse(int);  // deletes a given course from course record
+int insertNewCourse();  // inserts a new course to course record
 
 // display functions
 void display_students_forstaff();  // displays students in a given year and department
@@ -1219,6 +1229,391 @@ int manipulateCourseRecord(){
     }while(menu == 'A' || menu == 'B');
 
     return 0;
+}
+
+int insertNewCourse(){
+    Course course;
+    cout<<endl<<"Enter the id of the new course: ";
+    cin>>course.code;
+
+    for(int i = 0; i < courses.size(); ++i){
+        if(course.code == courses[i].code){
+            cout<<endl<<"There is a course with code "<<course.code<<" in database!";
+            return 0;
+        }
+    }
+
+    cout<<endl<<"Enter the name of the new course: ";
+    cin.ignore();
+    getline(cin, course.name);
+    cout<<endl<<"Enter the credit hour of the new course: ";
+    cin>>course.crHr;
+    cout<<endl<<"Enter the department of the new course: ";
+    cin.ignore();
+    getline(cin, course.department);
+    course.department = strToUpper(course.department);
+
+    cout<<endl<<"Enter the year of the new course: ";
+    cin>>course.year;
+    if(course.year < 1 || course.year > 5){
+        cout<<endl<<"Invalid year!";
+        return 0;
+    }
+
+    cout<<endl<<"Enter the semester of the new course: ";
+    cin>>course.semester;
+    if(course.semester != 1 && course.semester != 2){
+        cout<<endl<<"Invalid semester!";
+        return 0;
+    }
+
+    string value;
+    bool alreadyThere = false;
+
+    do{
+        cout<<endl<<"Enter id of teacher teaching this course (Enter 'X' if you are done): ";
+        cin>>value;
+        if(value != "x" && value != "X"){
+            for(int i = 0; i < course.teachers.size(); ++i){
+                if(course.teachers[i] == value){
+                    cout<<endl<<"The teacher with id "<<value<<" is already a teacher of the course!!";
+                    alreadyThere = true;
+                    break;
+                }
+            }
+            if(!alreadyThere) course.teachers.push_back(value);
+        }
+    }while(value != "x" && value != "X");
+
+    do{
+        cout<<endl<<"Enter code of a course that is a prerequisite to this course (Enter 'X' if you are done): ";
+        cin>>value;
+        if(value != "x" && value != "X"){
+            for(int i = 0; i < course.prerequisites.size(); ++i){
+                if(course.prerequisites[i] == value){
+                    cout<<endl<<"The course with code "<<value<<" is already a prerequisite of the course!!";
+                    alreadyThere = true;
+                    break;
+                }
+            }
+
+            if(!alreadyThere){
+                for(int i = 0; i < courses.size(); ++i){
+                    if(value == courses[i].code){
+                        course.prerequisites.push_back(value);
+                        break;
+                    }
+                    else if(i == courses.size() - 1){
+                        cout<<endl<<"There is no course with code "<<value<<" in database so it can't be a prerequisite!";
+                    }
+                }
+            }
+        }
+    }while(value != "x" && value != "X");
+
+    course.currentTeacher = 0;
+    courses.push_back(course);
+
+    return 0;
+}
+
+int updateExistingCourse(){
+    string courseCode;
+
+    cout<<endl<<"Enter the code of the course to update (Enter 'X' to go back): ";
+    cin>>courseCode;
+
+    if(courseCode == "x" && courseCode == "X") return 0;
+
+    int index;
+    for(int i = 0; i < courses.size(); ++i){
+        if(courses[i].code == courseCode){
+            index = i;
+            break;
+        }
+        else if(i == courses.size() - 1){
+            cout<<endl<<"There is no course with code "<<courseCode<<endl;
+            return 0;
+        }
+    }
+
+    char menu;
+    char menu2;
+
+    do{
+        cout<<endl<<"Enter 'A' to update the course";
+        cout<<endl<<"Enter 'B' to delete the course";
+        cout<<endl<<"Enter any other character to go back";
+        cout<<endl<<"Your choice: ";
+        cin>>menu;
+        menu = toupper(menu);
+        switch(menu){
+            case 'A':
+                updateCourse(courses[index]);
+                break;
+
+            case 'B':
+                cout<<endl<<"Are you sure you want to delete "<<courses[index].code<<" from the database?";
+                cout<<endl<<"Enter 'Y' to delete it and any other character to go back: ";
+                cin>>menu2;
+                menu2 = toupper(menu2);
+                if(menu2 != 'Y') break;
+                deleteCourse(index);
+                break;
+        }
+    }while(menu == 'A');
+
+    return 0;
+}
+
+int updateCourse(Course &course){
+    char menu;
+
+    do{
+        cout<<endl<<"Enter 'A' to change name of "<<course.code;
+        cout<<endl<<"Enter 'B' to change credit hour of "<<course.code;
+        cout<<endl<<"Enter 'C' to Add Prerequisite of "<<course.code;
+        cout<<endl<<"Enter 'D' to Add teacher to "<<course.code;
+        cout<<endl<<"Enter 'E' to Remove Prerequisite of "<<course.code;
+        cout<<endl<<"Enter 'F' to Remove teacher of "<<course.code;
+        cout<<endl<<"Enter any other character to go back";
+        cout<<endl<<"Your Choice: ";
+        cin>>menu;
+        menu = toupper(menu);
+
+        string value;
+        int value2;
+        int index;
+
+        switch (menu){
+            case 'A':
+                cout<<endl<<"The course's current name is "<<course.name;
+                cout<<endl<<"Enter the new name (Enter '=' to keep the current name): ";
+                cin>>value;
+                if(value != "=") course.name = value;
+                break;
+
+            case 'B':
+                cout<<endl<<"The course's current credit hour is "<<course.crHr;
+                cout<<endl<<"Enter the new credit hour (Enter '-1' to keep the current credit hour): ";
+                cin>>value2;
+                if(value2 >= 0) course.crHr = value2;
+                break;
+
+            case 'C':
+                do{
+                    value2 = 0;
+                    cout<<endl<<"Enter the new prerequisite (Enter '=' if you are done): ";
+                    cin>>value;
+                    if(value != "="){
+                        for(int i = 0; i < course.prerequisites.size(); ++i){
+                            if(value == course.prerequisites[i]){
+                                cout<<endl<<value<<" is already a prerequisite of the course!!";
+                                value2++;
+                                break;
+                            }
+                        }
+                        if(value2 == 0) course.prerequisites.push_back(value);
+                    }
+                }while(value != "=");
+                break;
+
+            case 'D':
+                do{
+                    value2 = 0;
+                    cout<<endl<<"Enter the new teacher (Enter '=' if you are done): ";
+                    cin>>value;
+                    if(value != "="){
+                        for(int i = 0; i < course.teachers.size(); ++i){
+                            if(value == course.teachers[i]){
+                                cout<<endl<<value<<" is already a teacher of the course!!";
+                                value2++;
+                                break;
+                            }
+                        }
+                    }
+                    if(value2 == 0) course.teachers.push_back(value);
+                }while(value != "=");
+                break;
+
+            case 'E':
+                value2 = 0;
+                cout<<endl<<"Enter the code of the prerequisite you want to remove (Enter '=' to go back): ";
+                cin>>value;
+
+                if(value == "=") break;
+
+                for(int i = 0; i < course.prerequisites.size(); ++i){
+                    if(value == course.prerequisites[i]){
+                        index = i;
+                        break;
+                    }
+                    else if(i == course.prerequisites.size() - 1){
+                        value2++;
+                        cout<<endl<<"There is no prerequisite with code "<<value<<'!';
+                    }
+                }
+
+                if(value2 != 0) break;
+
+                course.prerequisites.erase(course.prerequisites.begin() + index);
+                break;
+
+            case 'F':
+                value2 = 0;
+                cout<<endl<<"Enter the id of the teacher you want to remove (Enter '=' to go back): ";
+                cin>>value;
+
+                if(value == "=") break;
+
+                for(int i = 0; i < course.teachers.size(); ++i){
+                    if(value == course.teachers[i]){
+                        index = i;
+                        break;
+                    }
+                    else if(i == course.teachers.size() - 1){
+                        value2++;
+                        cout<<endl<<"There is no teacher with id "<<value<<'!';
+                    }
+                }
+
+                if(value2 != 0) break;
+
+                course.teachers.erase(course.teachers.begin() + index);
+                break;
+        }
+
+    }while(menu == 'A' || menu == 'B' || menu == 'C' || menu == 'D' || menu == 'E' || menu == 'F');
+
+    return 0;
+}
+
+int deleteCourse(int index){
+    for(int i = 0; i < students.size(); ++i){
+        for(int j = 0; j < students[i].myCourse.size(); ++j){
+            if((courses[index].code == students[i].myCourse[j].code) && (students[i].myCourse[j].grade == -1)){
+                cout<<endl<<"There are students learning this course this semester so it can't be deleted!";
+                return 0;
+            }
+        }
+    }
+
+    string courseCode = courses[index].code;
+
+    courses.erase(courses.begin() + index);
+
+    for(int i = 0; i < courses.size(); ++i){
+        int index2;
+        for(int j = 0; j < courses[i].prerequisites.size(); ++j){
+            if(courseCode == courses[i].prerequisites[j]){
+                index2 = j;
+                break;
+            }
+        }
+
+        courses[i].prerequisites.erase(courses[i].prerequisites.begin() + index2);
+    }
+
+    cout<<endl<<"The course "<<courseCode<<" is deleted successfully!!";
+    return 0;
+}
+
+void search_stud(){
+        char menu;
+
+        do{
+            cout<<endl<<"Enter 'A' to search by id";
+            cout<<endl<<"Enter 'B' to search by currently registered course";
+            cout<<endl<<"Enter any other character to go back";
+            cout<<endl<<"Your choice: ";
+            cin>>menu;
+            menu = toupper(menu);
+
+            switch (menu){
+
+            case 'A':
+                search_by_id();
+                break;
+
+            case 'B':
+                search_by_course();
+                break;
+            }
+        }while(menu == 'A' || menu == 'B');
+      
+
+}
+
+void search_by_id(){
+    string id;
+
+    cout<<"Enter the id of the student: ";
+    cin>>id;
+
+    for(int i = 0; i < students.size(); i++){
+        if(students[i].id == id){
+            display_student_info(students[i]);
+            break;
+        }
+        else if(i == students.size() - 1){
+            cout<<"\nStudent not found in the database!!\n";
+        }
+    }
+}
+
+void search_by_course(){
+    string code;
+
+    cout<<"Enter the course code: ";
+    cin>>code;
+
+    map<int, string> studentMap;
+    for(int i = 0; i < students.size(); ++i){
+        for(int j = 0; j < students[i].myCourse.size(); ++j){
+            if((code == students[i].myCourse[j].code) && (students[i].myCourse[j].grade == -1)){
+                studentMap.insert(pair<int, string>(i, students[i].id));
+            }
+        }
+    }
+
+    int *orders = new int[studentMap.size()];
+    order(orders, studentMap.size(), studentMap);
+    display_students(orders, studentMap.size());
+    delete[] orders;
+}
+
+void search_course(){
+        char menu;
+
+        do{
+            cout<<endl<<"Enter 'A' to search Course by its code";
+            cout<<endl<<"Enter 'B' to search courses that a Student is currently registered to";
+            cout<<endl<<"Enter 'C' to search courses that a Teacher teaches";
+            cout<<endl<<"Enter 'D' to search courses that have specific prerequisites";
+            cout<<endl<<"Enter any other key to go back";
+            cout<<endl<<"Your choice: ";
+            cin>>menu;
+            menu = toupper(menu);
+
+            switch (menu)
+            {
+                case 'A':
+                    search_by_course_code();
+                    break;
+
+                case 'B':
+                    search_by_student();
+                    break;
+
+                case 'C':
+                    search_by_teacher();
+                    break;
+
+                case 'D':
+                    search_by_prerequisite();
+                    break;
+            }
+        }while(menu == 'A' || menu == 'B' || menu == 'C' || menu == 'D');
 }
 
 #endif
