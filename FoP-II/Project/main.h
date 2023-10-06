@@ -63,6 +63,7 @@ void display_courses_info(Student stud);  // displays courses that the student i
 int courseRegister(string);  // displays courses that the student can register to
 bool canRegister(Course, Student, bool = false);  // checks whether or not a student can register to a course
 int registration(string, Student&);  // registers a course to a student
+int dropCourse(string, Student&);  // drops a course that a student was registered to
 int changePassword(string&);  // changes the password
 bool isNewStudent(Student);  // return true if the student is new (doesn't have any completed courses) and returns false oterwise
 
@@ -77,6 +78,21 @@ float toPoint(float grade);  // calculates the point mark of a given mark grade
 string toLetter(float grade);  // calculates the letter grade of a given mark grade
 float semesterGPA(Student stud, int semester);  // calculates a student's gpa in a given semester
 float calculateCgpa(Student);  // calculates cgpa of a given student
+void calculateRank(int, string);  // calculates the rank of a student in his/her year and department
+void refresh(StudCourse&);  // calculates the derived members of the structure from the main menbers
+void refresh(Student&, bool = false);  // calculates the derived members of the structure from the main menbers and calculates rank if the boolean is true
+
+// Order function template
+template <typename T>
+void order(int*, int, map<int, T>, bool = true);  // orders the map in ascending or descending orders based on the map's values
+
+//Staff functions
+int manipulateStudentRecord();  // enables user to manipulate student record
+int updateExistingStudent();  // identifies which student record will be manipulated
+int updateStudent(Student&);  // modifies a given student record
+int recordNewStudent();  // adds a new student to student record
+
+int manipulateCourseRecord();  // enables user to manipulate course record
 
 // display functions
 void display_students_forstaff();  // displays students in a given year and department
@@ -85,6 +101,7 @@ void display_students(int*, int);  // displays selected students in ordered mann
 void display_courses(int*, int);  // displays selected students in ordered manner
 void display_course_info(Course course);  // displays information about the given course
 int sort_students();  // sorts students by cgpa or specific course grade and displays the result
+int promote(Student&);  // promotes the student to the next semester if they are eligible
 
 
 
@@ -843,6 +860,363 @@ int registration(string code, Student &stud){
     else{
         cout<<endl<<"Student with id "<<stud.id<<" can NOT register to the course with code "<<code<<endl;
     }
+
+    return 0;
+}
+
+template <typename T>
+void order(int* orders, int n, map<int, T> orderMap, bool isascending){
+
+    typename map<int, T>::iterator orderMapItr = orderMap.begin();
+    T lastValue = orderMapItr->second, orderValue;
+
+    for(orderMapItr = orderMap.begin(); orderMapItr != orderMap.end(); ++orderMapItr){
+        if(isascending){
+            if(lastValue <= orderMapItr->second){
+                lastValue = orderMapItr->second;
+                orders[n-1] = orderMapItr->first;
+            }
+        }
+        else{
+            if(lastValue >= orderMapItr->second){
+                lastValue = orderMapItr->second;
+                orders[n-1] = orderMapItr->first;
+            }
+        }
+    }
+
+    for(int i=0; i<n; ++i){
+        orderValue = lastValue;
+        for(orderMapItr = orderMap.begin(); orderMapItr != orderMap.end(); ++orderMapItr){
+            int count=0;
+
+            for(int k=0; k<i; ++k){
+                if(orderMapItr->first == orders[k]){
+                    count += 1;
+                    break;
+                }
+            }
+
+            if(count==1){
+                continue;
+            }
+
+            if(isascending){
+                if(orderValue >= orderMapItr->second){
+                    orderValue = orderMapItr->second;
+                    orders[i] = orderMapItr->first;
+                }
+            }
+            else{
+                if(orderValue <= orderMapItr->second){
+                    orderValue = orderMapItr->second;
+                    orders[i] = orderMapItr->first;
+                }
+            }
+        }
+    }
+}
+
+void refresh(StudCourse &course){
+    if(course.grade == -1) course.status = 'R';
+    else if(course.grade < 40) course.status = 'F';
+    else if(course.grade == 101) course.status = 'U';
+    else course.status = 'P';
+}
+
+void refresh(Student &stud, bool changePassword){
+    if(changePassword){
+        stud.password = strConcat(strToUpper(stud.name[2]), strToLower(stud.id), 5, 5);
+    }
+
+    stud.semesterLoad = 0;
+    for(int i = 0; i < stud.myCourse.size(); ++i){
+        refresh(stud.myCourse[i]);
+        if(stud.myCourse[i].grade == -1){
+            stud.semesterLoad += stud.myCourse[i].crHr;
+        }
+    }
+
+    stud.cgpa = calculateCgpa(stud);
+
+    if(isNewStudent(stud)){
+        stud.status = 'N';
+    }
+    else if(stud.status != 'W' && stud.status != 'G'){
+        if(stud.cgpa < 1.5){
+            stud.status = 'D';
+        }
+        else if(stud.cgpa < 2){
+            stud.status = '!';
+        }
+        else{
+            stud.status = 'P';
+        }
+    }
+
+    stud.department = strToUpper(stud.department);
+
+    promote(stud);
+
+    if(stud.semester > 10 && stud.semester < 2000) stud.rank = 0;
+    else calculateRank(stud.semester, stud.department);
+}
+
+int promote(Student &stud){
+    if(stud.status == 'D' && stud.status == 'W' && stud.status == 'G') return 0;
+
+    if(stud.semester < 10){
+        int year = (stud.semester + 1) / 2;
+        int semester = ((stud.semester + 1) % 2) + 1;
+
+        for(int j = 0; j < stud.myCourse.size(); ++j){
+            if(stud.myCourse[j].year == year && stud.myCourse[j].semester == semester && stud.myCourse[j].grade == -1) return 0;
+        }
+
+        stud.semester++;
+    }
+    else {
+        bool canGraduate = true;
+        for(int j = 0; j < stud.myCourse.size(); ++j){
+            if(stud.myCourse[j].status != 'P'){
+                canGraduate = false;
+                break;
+            }
+        }
+
+        if(canGraduate) stud.semester = 1000;
+        else stud.semester = 11;
+    }
+
+    return 0;
+}
+
+void calculateRank(int semester, string department){
+    int n = 0;
+    map<int, float> cgpaMap;
+
+    if(semester >= 2000){
+        for(int i = 0; i < students.size(); ++i){
+            if(students[i].semester == semester && students[i].department == department){
+                cgpaMap.insert(pair<int, float>(i, students[i].cgpa));
+                n++;
+            }
+        }
+    }
+    else{
+        int year = (semester + 1) / 2;
+        for(int i = 0; i < students.size(); ++i){
+            if(((students[i].semester + 1) / 2 == year) && (students[i].department == department)){
+                cgpaMap.insert(pair<int, float>(i, students[i].cgpa));
+                n++;
+            }
+        }
+    }
+
+    int *orders = new int[n];
+    order(orders, n, cgpaMap);
+    for(int i = 0; i < n; ++i){
+        students[orders[i]].rank = i + 1;
+    }
+}
+
+int manipulateStudentRecord(){
+    char menu;
+
+    do{
+        cout<<endl<<"Enter 'A' to register a student";
+        cout<<endl<<"Enter 'B' to update an existing student record";
+        cout<<endl<<"Enter any other character to go back";
+        cout<<endl<<"Your choice: ";
+        cin>>menu;
+        menu = toupper(menu);
+
+        switch(menu){
+            case 'A':
+                recordNewStudent();
+                break;
+
+            case 'B':
+                updateExistingStudent();
+                break;
+        }
+    }while(menu == 'A' || menu == 'B');
+
+    return 0;
+}
+
+int recordNewStudent(){
+    Student stud;
+    cout<<endl<<"Enter the id of the new student: ";
+    cin>>stud.id;
+
+    for(int i = 0; i < students.size(); ++i){
+        if(students[i].id == stud.id){
+            cout<<endl<<"There is a student with id "<<stud.id<<" in database!";
+            return 0;
+        }
+    }
+
+    cout<<endl<<"Enter the first name of the new Student: ";
+    cin>>stud.name[0];
+    cout<<endl<<"Enter the father's name of the new Student: ";
+    cin>>stud.name[1];
+    cout<<endl<<"Enter the grandfather's name of the new Student: ";
+    cin>>stud.name[2];
+    stud.department = "Natural and Social Science";
+    stud.semester = 1;
+    students.push_back(stud);
+
+    for(int i = 0; i < courses.size(); ++i){
+        if(courses[i].year == 1 && courses[i].semester == 1){
+            registration(courses[i].code, students[students.size() - 1]);
+        }
+    }
+
+    refresh(students[students.size() - 1], true);
+
+    return 0;
+}
+
+int updateExistingStudent(){
+    string studId;
+
+    cout<<endl<<"Enter the id of the student to update (Enter 'X' to go back): ";
+    cin>>studId;
+
+    if(studId == "x" && studId == "X") return 0;
+
+    int index;
+    for(int i = 0; i < students.size(); ++i){
+        if(students[i].id == studId){
+            index = i;
+            break;
+        }
+        else if(i == students.size() - 1){
+            cout<<endl<<"There is no student with id "<<studId<<endl;
+            return 0;
+        }
+    }
+
+    updateStudent(students[index]);
+    return 0;
+}
+
+int updateStudent(Student &stud){
+    char menu;
+    do{
+        cout<<endl<<"Enter 'A' to change name of "<<stud.id;
+        cout<<endl<<"Enter 'B' to change id of "<<stud.id;
+        cout<<endl<<"Enter 'C' to change department of "<<stud.id;
+        cout<<endl<<"Enter 'D' to Add course to "<<stud.id;
+        cout<<endl<<"Enter 'E' to Drop course of "<<stud.id;
+        cout<<endl<<"Enter 'F' to change status of "<<stud.id;
+        cout<<endl<<"Enter any other character to go back";
+        cout<<endl<<"Your Choice: ";
+        cin>>menu;
+        menu = toupper(menu);
+
+        string value;
+        char value2;
+
+        switch (menu){
+        case 'A':
+            cout<<endl<<"The student's current name is "<<stud.name[0]<<' '<<stud.name[1]<<' '<<stud.name[2]<<endl;
+            cout<<endl<<"Enter the new first name (Enter '=' to keep the current name): ";
+            cin>>value;
+            if(value != "=") stud.name[0] = value;
+            cout<<endl<<"Enter the new father's name (Enter '=' to keep the current name): ";
+            cin>>value;
+            if(value != "=") stud.name[1] = value;
+            cout<<endl<<"Enter the new grandfather's name (Enter '=' to keep the current name): ";
+            cin>>value;
+            if(value != "=") stud.name[2] = value;
+            break;
+
+        case 'B':
+            cout<<endl<<"The student's current id is "<<stud.id;
+            cout<<endl<<"Enter the new id (Enter '=' to keep the current id): ";
+            cin>>value;
+            if(value != "=") stud.id = value;
+            break;
+
+        case 'C':
+            cout<<endl<<"The student's current department is "<<stud.department;
+            cout<<endl<<"Enter the new department (Enter '=' to keep the current department): ";
+            cin.ignore();
+            getline(cin, value);
+            if(value != "=") stud.department = value;
+            break;
+
+        case 'D':
+            cout<<endl<<"Enter the course code: ";
+            cin>>value;
+            registration(value, stud);
+            break;
+
+        case 'E':
+            cout<<endl<<"Enter the course code: ";
+            cin>>value;
+            dropCourse(value, stud);
+            break;
+            
+        case 'F':
+            cout<<endl<<"The student's current status is '"<<statusToWords(stud.status)<<"' ";
+            cout<<endl<<"Enter 'W' for withdrawal and 'C' be readmission: ";
+            cin>>value2;
+            value2 = toupper(value2);
+
+            if(value2 == 'C' || value2 == 'W') stud.status = value2;
+            else cout<<endl<<"Invalid Status value!";
+            break;
+        }
+
+        refresh(stud);
+    }while(menu == 'A' || menu == 'B' || menu == 'C' || menu == 'D' || menu == 'E' || menu == 'F');
+
+    return 0;
+}
+
+int dropCourse(string courseCode, Student &stud){
+    int index;
+
+    for(int i = 0; i < stud.myCourse.size(); ++i){
+        if((courseCode == stud.myCourse[i].code) && (stud.myCourse[i].grade == -1)){
+            index = i;
+            break;
+        }
+        else if(i == stud.myCourse.size() - 1){
+            cout<<endl<<"The student "<<stud.id<<" is not currently registered to a course with course code "<<courseCode<<'!';
+            return 0;
+        }
+    }
+
+    stud.myCourse.erase(stud.myCourse.begin() + index);
+
+    return 0;
+}
+
+int manipulateCourseRecord(){
+    char menu;
+
+    do{
+        cout<<endl<<"Enter 'A' to insert a new course";
+        cout<<endl<<"Enter 'B' to update or delete an existing course record";
+        cout<<endl<<"Enter any other character to go back";
+        cout<<endl<<"Your choice: ";
+        cin>>menu;
+        menu = toupper(menu);
+
+        switch(menu){
+            case 'A':
+                insertNewCourse();
+                break;
+
+            case 'B':
+                updateExistingCourse();
+                break;
+        }
+    }while(menu == 'A' || menu == 'B');
 
     return 0;
 }
