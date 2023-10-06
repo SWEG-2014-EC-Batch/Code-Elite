@@ -52,6 +52,10 @@ struct Student{
 vector<Student> students;  // student vector
 vector<Course> courses;  // course vector
 
+// File related Functions
+int readFromFile();  //Read from file and write to variables (vectors)
+int save();  //Save changes by writing variables (vectors) to file
+
 // Sign in functions
 int student();  // Student
 void teacher();  // Teacher
@@ -79,8 +83,10 @@ string toLetter(float grade);  // calculates the letter grade of a given mark gr
 float semesterGPA(Student stud, int semester);  // calculates a student's gpa in a given semester
 float calculateCgpa(Student);  // calculates cgpa of a given student
 void calculateRank(int, string);  // calculates the rank of a student in his/her year and department
-void refresh(StudCourse&);  // calculates the derived members of the structure from the main menbers
-void refresh(Student&, bool = false);  // calculates the derived members of the structure from the main menbers and calculates rank if the boolean is true
+string statusToWords(char status);  // converts the character status to word status
+int howMany(int year, string department, char status = '\0');  // calculates the number of students with a particular status in a given year and department
+void refresh(StudCourse&);  // calculates the derived members of the structure from the main members
+void refresh(Student&, bool = false);  // calculates the derived members of the structure from the main members and calculates rank if the boolean is true
 
 // Order function template
 template <typename T>
@@ -92,6 +98,10 @@ void search_by_course();  // searches for students who are registered to a given
 void search_by_id();  // searches for a specific student using the student's id
 
 void search_course();  // searches for courses
+void search_by_course_code();  // searches for a specific course using the course code
+int search_by_student();  // searches for courses that a given student is currently registered to
+void search_by_teacher();  // searches for courses that a given teacher currently teaches
+void search_by_prerequisite();  // searches for courses that have the given course code as a prerequisite
 
 int manipulateStudentRecord();  // enables user to manipulate student record
 int updateExistingStudent();  // identifies which student record will be manipulated
@@ -104,6 +114,8 @@ int updateCourse(Course&);  // modifies a given course record
 int deleteCourse(int);  // deletes a given course from course record
 int insertNewCourse();  // inserts a new course to course record
 
+void statistical_report();  // displays a statistical report of a given year and department
+
 // display functions
 void display_students_forstaff();  // displays students in a given year and department
 void display_courses_forstaff();  // displays courses in a given department
@@ -112,6 +124,7 @@ void display_courses(int*, int);  // displays selected students in ordered manne
 void display_course_info(Course course);  // displays information about the given course
 int sort_students();  // sorts students by cgpa or specific course grade and displays the result
 int promote(Student&);  // promotes the student to the next semester if they are eligible
+
 
 
 
@@ -1614,6 +1627,366 @@ void search_course(){
                     break;
             }
         }while(menu == 'A' || menu == 'B' || menu == 'C' || menu == 'D');
+}
+
+void search_by_course_code(){
+    string code;
+
+    cout<<"\nEnter course code: ";
+    cin>>code;
+
+    for(int i = 0; i < courses.size(); i++){
+        if(courses[i].code == code){
+            display_course_info(courses[i]);
+            break;
+        }
+        else if(i == courses.size() - 1){
+            cout<<"\nA course with this course code doesn't exist in the database!!\n";
+        }
+    }
+}
+
+int search_by_student(){
+    string studId;
+
+    cout<<"\nEnter the id of the student: ";
+    cin>>studId;
+
+    int index;
+    for(int i = 0; i < students.size(); i++){
+        if(studId == students[i].id){
+            index = i;
+            break;
+        }
+        else if(i == students.size() - 1){
+            cout<<"\nStudent not found in the record\n";
+            return 0;
+        }
+    }
+
+    map<int, string> courseMap;
+
+    for(int i = 0; i < students[index].myCourse.size(); ++i){
+        if(students[index].myCourse[i].grade == -1){
+            for(int j = 0; j < courses.size(); ++i){
+                if((students[index].myCourse[i].code == courses[j].code)){
+                    courseMap.insert(pair<int, string>(j, courses[j].code));
+                }
+                break;
+            }
+        }
+    }
+    
+    int *orders = new int[students[index].myCourse.size()];
+    order(orders, students[index].myCourse.size(), courseMap);
+    display_courses(orders, students[index].myCourse.size());
+    delete[] orders;
+
+    return 0;
+}
+
+void search_by_teacher(){
+    string teacherId;
+
+    cout<<"\nEnter the id of the teacher: ";
+    cin>>teacherId;
+
+    map<int, string> courseMap;
+
+    for(int i = 0; i < courses.size(); ++i){
+        if(teacher_teaches_course(teacherId, courses[i])){
+            courseMap.insert(pair<int, string>(i, courses[i].code));
+        }
+    }
+    
+    int *orders = new int[courseMap.size()];
+    order(orders, courseMap.size(), courseMap);
+    display_courses(orders, courseMap.size());
+    delete[] orders;
+}
+
+void search_by_prerequisite(){
+    string courseCode;
+
+    cout<<"\nEnter the code of the prerequisite (Enter 'X' to find courses that have no prerequisite): ";
+    cin>>courseCode;
+
+    map<int, string> courseMap;
+
+    if(courseCode == "x" || courseCode == "X"){
+        for(int i = 0; i < courses.size(); ++i){
+            if(courses[i].prerequisites.size() == 0) courseMap.insert(pair<int, string>(i, courses[i].code));
+        }
+    }
+    else{
+        for(int i = 0; i < courses.size(); ++i){
+            for(int j = 0; j < courses[i].prerequisites.size(); ++i){
+                if(courseCode == courses[i].prerequisites[j]){
+                    courseMap.insert(pair<int, string>(i, courses[i].code));
+                    break;
+                }
+            }
+        }
+    }
+
+    int *orders = new int[courseMap.size()];
+    order(orders, courseMap.size(), courseMap);
+    display_courses(orders, courseMap.size());
+    delete[] orders;
+}
+
+string statusToWords(char status){
+    if(status == 'P') return "Passed";
+    else if(status == 'F') return "Fail";
+    else if(status == 'U') return "No Grade";
+    else if(status == 'R') return "Registered";
+    else if(status == 'D') return "Dismissed";
+    else if(status == '!') return "Warned";
+    else if(status == 'W') return "Withdrawal";
+    else if(status == 'N') return "New Student";
+    else if(status == 'G') return "Graduated";
+
+    return "\0";
+}
+
+void statistical_report(){
+    vector<int> graduationYears;
+    string department;
+
+    for(int i = 0; i < students.size(); ++i){
+        if(students[i].semester > 1000){
+            for(int j = 0; j < graduationYears.size(); ++j){
+                if(students[i].semester == graduationYears[j]) break;
+                else if(j == graduationYears.size() - 1){
+                    graduationYears.push_back(students[i].semester);
+                }
+            }
+        }
+    }
+
+    cout<<endl<<"Please enter department (Enter 'All' to select all department): ";
+    cin.ignore();
+    getline(cin, department);
+    department = strToUpper(department);
+
+    cout<<endl<<"Statistical Report of "<<department<<" department"<<endl;
+
+    cout<<endl<<endl<<"______________________________________";
+    cout<<endl<<"|Batch|Passed|Warned|Failed|Withdraws|\n";
+    for(int i = 1; i <= 5; ++i){
+        cout<<"|  "<<i<<"  |  "<<howMany(i, department, 'P')<<"  |  "<<howMany(i, department, '!')<<"  |  "<<howMany(i, department, 'D')<<"  |   "<<howMany(i, department, 'W')<<"    |\n";
+        cout<<"--------------------------------------\n";
+    }
+
+    cout<<endl<<endl<<"Number of non-graduates: "<<howMany(6, department)<<endl;
+
+    cout<<endl<<endl<<"____________________________________";
+    cout<<endl<<"|Graduating Year|Number of Students|\n";
+    for(int i = 0; i < graduationYears.size(); ++i){
+        cout<<"|     "<<graduationYears[i]<<"      |       "<<howMany(graduationYears[i], department)<<"        |\n";
+        cout<<"------------------------------------\n";
+    }
+}
+
+int howMany(int year, string department, char status){
+    int sum = 0;
+
+    if(year < 6){
+        for(int i = 0; i < students.size(); ++i){
+            if(((students[i].semester + 1)/ 2 == year) && ((department == "ALL") || (students[i].department == department)) && (students[i].status == status)){
+                sum++;
+            }
+        }
+    }
+    else if(year == 6){
+        for(int i = 0; i < students.size(); ++i){
+            if(students[i].semester == 11 && ((department == "ALL") || (students[i].department == department)) && (students[i].status == status)){
+                sum++;
+            }
+        }
+    }
+    else{
+        for(int i = 0; i < students.size(); ++i){
+            if(students[i].semester == year && ((department == "ALL") || (students[i].department == department)) && (students[i].status == status)){
+                sum++;
+            }
+        }
+    }
+
+    return sum;
+}
+
+int save(){
+    char choice;
+    cout<<endl<<"Do you want to save changes you made to the database?\nEnter 'Y' to save changes and any other character to dismiss changes\nYour choice: ";
+    cin>>choice;
+    choice = toupper(choice);
+
+    if(choice != 'Y'){
+        return 0;
+    }
+
+    fstream studFile, coursesFile;
+    studFile.open("Students", ios::out | ios::trunc);
+    coursesFile.open("Courses", ios::out | ios::trunc);
+
+    if(!studFile.is_open() || !coursesFile.is_open()){
+        cout<<endl<<"Couldn\'t open file(s)!!";
+        return 0;
+    }
+
+    studFile<<students.size();
+
+    for(int i = 0; i < students.size(); ++i){
+        studFile<<'\n'<<students[i].name[0];
+        studFile<<'|'<<students[i].name[1];
+        studFile<<'|'<<students[i].name[2];
+        studFile<<'|'<<students[i].id;
+        studFile<<'|'<<students[i].semester;
+        studFile<<'|'<<students[i].department;
+        studFile<<'|'<<students[i].password;
+        studFile<<'\n'<<students[i].myCourse.size();
+
+        for(int j = 0; j < students[i].myCourse.size(); ++j){
+            studFile<<'\n'<<students[i].myCourse[j].name;
+            studFile<<'|'<<students[i].myCourse[j].code;
+            studFile<<'|'<<students[i].myCourse[j].crHr;
+            studFile<<'|'<<students[i].myCourse[j].grade;
+            studFile<<'|'<<students[i].myCourse[j].year;
+            studFile<<'|'<<students[i].myCourse[j].semester;
+            studFile<<'|'<<students[i].myCourse[j].teacher;
+        }
+    }
+
+    coursesFile<<courses.size()<<'\n';
+
+    for(int i = 0; i < courses.size(); ++i){
+        coursesFile<<'\n'<<courses[i].name;
+        coursesFile<<'|'<<courses[i].code;
+        coursesFile<<'|'<<courses[i].crHr;
+        coursesFile<<'|'<<courses[i].year;
+        coursesFile<<'|'<<courses[i].semester;
+        coursesFile<<'|'<<courses[i].department;
+        coursesFile<<'|'<<courses[i].currentTeacher;
+        coursesFile<<'\n'<<courses[i].prerequisites.size()<<'|';
+
+        for(int j = 0; j < courses[i].prerequisites.size(); ++j){
+            coursesFile<<courses[i].prerequisites[j]<<'|';
+        }
+
+        coursesFile<<'\n'<<courses[i].teachers.size()<<'|';
+
+        for(int j = 0; j < courses[i].teachers.size(); ++j){
+            coursesFile<<courses[i].teachers[j]<<'|';
+        }
+    }
+
+    studFile.close();
+    coursesFile.close();
+    cout<<endl<<"File successfully saved!!";
+    return 0;
+}
+
+int readFromFile(){
+    fstream studentFile, courseFile;
+    studentFile.open("Students", ios::in);
+    courseFile.open("Courses", ios::in);
+
+    if(!studentFile.is_open() || !courseFile.is_open()){
+        cout<<endl<<"Couldn\'t open file(s)!!";
+        return 0;
+    }
+
+    int size, size1;
+    Student stud;
+    Course course;
+
+    studentFile.seekg(0, ios::beg);
+    studentFile>>size;
+    studentFile.seekg(1, ios::cur);
+
+    for(int i = 0; i < size; ++i){
+        Student stud;
+
+        getline(studentFile, stud.name[0], '|');
+        getline(studentFile, stud.name[1], '|');
+        getline(studentFile, stud.name[2], '|');
+        getline(studentFile, stud.id, '|');
+        studentFile>>stud.semester;
+        studentFile.seekg(1, ios::cur);
+        getline(studentFile, stud.department, '|');
+        getline(studentFile, stud.password);
+        studentFile>>size1;
+        studentFile.seekg(1, ios::cur);
+
+        for(int j = 0; j < size1; ++j){
+            StudCourse myCourse;
+
+            getline(studentFile, myCourse.name, '|');
+            getline(studentFile, myCourse.code, '|');
+            studentFile>>myCourse.crHr;
+            studentFile.seekg(1, ios::cur);
+            studentFile>>myCourse.grade;
+            studentFile.seekg(1, ios::cur);
+            studentFile>>myCourse.year;
+            studentFile.seekg(1, ios::cur);
+            studentFile>>myCourse.semester;
+            studentFile.seekg(1, ios::cur);
+            getline(studentFile, myCourse.teacher);
+
+            stud.myCourse.push_back(myCourse);
+        }
+
+        students.push_back(stud);
+        refresh(students[i]);
+    }
+
+    courseFile.seekg(0, ios::beg);
+    courseFile>>size;
+    courseFile.seekg(1, ios::cur);
+
+    for(int i = 0; i < size; ++i){
+        Course course;
+
+        courseFile.seekg(1, ios::cur);
+        getline(courseFile, course.name, '|');
+        getline(courseFile, course.code, '|');
+        courseFile>>course.crHr;
+        courseFile.seekg(1, ios::cur);
+        courseFile>>course.year;
+        courseFile.seekg(1, ios::cur);
+        courseFile>>course.semester;
+        courseFile.seekg(1, ios::cur);
+        getline(courseFile, course.department, '|');
+        course.department = strToUpper(course.department);
+        courseFile>>course.currentTeacher;
+        courseFile.seekg(1, ios::cur);
+        courseFile>>size1;
+        courseFile.seekg(1, ios::cur);
+
+        for(int j = 0; j < size1; ++j){
+            string prerequisite;
+            getline(courseFile, prerequisite, '|');
+            course.prerequisites.push_back(prerequisite);
+        }
+
+        courseFile.seekg(1, ios::cur);
+        courseFile>>size1;
+        courseFile.seekg(1, ios::cur);
+
+        for(int j = 0; j < size1; ++j){
+            string teacher;
+            getline(courseFile, teacher, '|');
+            course.teachers.push_back(teacher);
+        }
+
+        courses.push_back(course);
+    }
+
+    studentFile.close();
+    courseFile.close();
+    cout<<endl<<"File successfully read!!";
+    return 0;
 }
 
 #endif
