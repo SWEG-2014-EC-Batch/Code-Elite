@@ -58,9 +58,16 @@ void teacher();  // Teacher
 void staff();  // Staff(Manager)
 
 // Student functions
+void display_student_info(Student stud);  // displays information about the student that signed in
 void display_courses_info(Student stud);  // displays courses that the student is currently registered to
+int courseRegister(string);  // displays courses that the student can register to
+bool canRegister(Course, Student, bool = false);  // checks whether or not a student can register to a course
+int registration(string, Student&);  // registers a course to a student
+int changePassword(string&);  // changes the password
+bool isNewStudent(Student);  // return true if the student is new (doesn't have any completed courses) and returns false oterwise
 
 // Teacher functions
+bool teacher_teaches_course(string teacher, Course crs);  // checks if the teacher teaches the course
 int signInToCourse(string, string);  // signs in a teacher to a course he/she is teaching to
 int updateStudentCourseGrade(string, string, Course);  // changes grade of a students course
 
@@ -72,7 +79,12 @@ float semesterGPA(Student stud, int semester);  // calculates a student's gpa in
 float calculateCgpa(Student);  // calculates cgpa of a given student
 
 // display functions
+void display_students_forstaff();  // displays students in a given year and department
+void display_courses_forstaff();  // displays courses in a given department
 void display_students(int*, int);  // displays selected students in ordered manner
+void display_courses(int*, int);  // displays selected students in ordered manner
+void display_course_info(Course course);  // displays information about the given course
+int sort_students();  // sorts students by cgpa or specific course grade and displays the result
 
 
 
@@ -442,6 +454,397 @@ void display_students(int *orders, int n){
     }
     
     cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+}
+
+void display_student_info(Student stud){
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+
+    cout<<endl<<"\tStudent Information\n";
+    cout<<endl<<"Student Name: "<<stud.name[0]<<' '<<stud.name[1];
+    cout<<endl<<"Student Id: "<<stud.id;
+    cout<<endl<<"Department: "<<stud.department;
+    cout<<endl<<"Status: "<<statusToWords(stud.status);
+    if(stud.status == 'G'){
+        cout<<endl<<"Graduation Year: ";
+        if(stud.semester == 1000) cout<<"Not inserted yet!!";
+        else cout<<stud.semester;
+    }
+    else{
+        cout<<endl<<"Year: "<<(stud.semester + 1) / 2<<"\tSemester "<<((stud.semester + 1) % 2) + 1;
+        cout<<endl<<"Semester Load: "<<stud.semesterLoad;
+    }
+    cout<<endl<<"Student CGPA: "<<stud.cgpa;
+    cout<<endl<<"Student Rank: "<<stud.rank<<endl;
+
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+}
+
+void display_students_forstaff(){
+    int year;
+    string department;
+
+    cout<<endl<<"Enter 100 to select all non-graduated years and enter 1000 to select all graduated years";
+    cout<<endl<<"Please enter Batch Year or Graduation Year: ";
+    cin>>year;
+
+    cout<<"Please enter department (Enter 'All' to select all departments): ";
+    cin.ignore();
+    getline(cin, department);
+    department = strToUpper(department);
+
+    map<int, string> studentMap;
+
+    if(year < 1000){
+        for(int i = 0; i < students.size(); ++i){
+            if((((year == 100) && students[i].status != 'G') || (year == (students[i].semester + 1) / 2)) && ((department == "ALL") || (department == students[i].department))){
+                studentMap.insert(pair<int, string>(i, students[i].id));
+            }
+        }
+    }
+    else{
+        for(int i = 0; i < students.size(); ++i){
+            if((((year == 1000) && students[i].status == 'G') || (year == students[i].semester)) && ((department == "ALL") || (department == students[i].department))){
+                studentMap.insert(pair<int, string>(i, students[i].id));
+            }
+        }
+    }
+
+    int *orders = new int[studentMap.size()];
+    order(orders, studentMap.size(), studentMap);
+    display_students(orders, studentMap.size());
+    delete[] orders;
+}
+
+int sort_students(){
+    int year;
+    char menu;
+
+    cout<<endl<<"Enter 100 to select all non-graduated years and enter 1000 to select all graduated years";
+    cout<<endl<<"Please enter Batch Year or Graduation Year: ";
+    cin>>year;
+
+    cout<<endl<<"Enter 'A' to sort the students by CGPA";
+    cout<<endl<<"Enter 'B' to sort the students by specific course";
+    cout<<endl<<"Enter any other character to go back";
+    cout<<endl<<"Your choice: ";
+    cin>>menu;
+    menu = toupper(menu);
+
+    if(menu != 'A' && menu != 'B') return 0;
+
+    map<int, float> resultMap;
+    string department;
+    string courseCode;
+
+    switch(menu){
+        case 'A':
+            cout<<"Please enter department (Enter 'All' to select all department): ";
+            cin.ignore();
+            getline(cin, department);
+            department = strToUpper(department);
+            
+            if(year < 1000){
+                for(int i = 0; i < students.size(); ++i){
+                    if((((year == 100) && students[i].status != 'G') || (year == (students[i].semester + 1) / 2)) && ((department == "ALL") || (department == students[i].department))){
+                        resultMap.insert(pair<int, float>(i, students[i].cgpa));
+                    }
+                }
+            }
+            else{
+                for(int i = 0; i < students.size(); ++i){
+                    if((((year == 1000) && students[i].status == 'G') || (year == students[i].semester)) && ((department == "ALL") || (department == students[i].department))){
+                        resultMap.insert(pair<int, float>(i, students[i].cgpa));
+                    }
+                }
+            }
+            break;
+
+        case 'B':
+            cout<<endl<<"Enter the course code: ";
+            cin>>courseCode;
+
+            if(year < 1000){
+                for(int i = 0; i < students.size(); ++i){
+                    for(int j = 0; j < students[i].myCourse.size(); ++j){
+                        if((courseCode == students[i].myCourse[j].code) && (students[i].myCourse[j].grade != -1) && (((year == 100) && students[i].status != 'G') || (year == ((students[i].semester + 1) / 2)))){
+                            resultMap.insert(pair<int, float>(i, students[i].myCourse[j].grade));
+                        }
+                    }
+                }    
+            }
+            else{
+                for(int i = 0; i < students.size(); ++i){
+                    for(int j = 0; j < students[i].myCourse.size(); ++j){
+                        if((courseCode == students[i].myCourse[j].code) && (students[i].myCourse[j].grade != -1) && (((year == 1000) && students[i].status == 'G') || (year == students[i].semester))){
+                            resultMap.insert(pair<int, float>(i, students[i].myCourse[j].grade));
+                        }
+                    }
+                }   
+            }
+            break;
+    }
+
+    int n, m;
+    char menu2;
+
+    cout<<endl<<"Enter '%' if you want top m% results";
+    cout<<endl<<"Enter any other key to get top n results";
+    cout<<endl<<"Your choice: ";
+    cin>>menu2;
+
+    if(menu2 == '%'){
+        cout<<endl<<"Enter the value of n (1 - "<<resultMap.size()<<"): ";
+        cin>>n;
+        if(n < 1 || n > resultMap.size()) n = resultMap.size();
+    }
+    else{
+        cout<<endl<<"Enter the value of m (1 - 100): ";
+        cin>>m;
+        if(m < 1 || m > 100) m = 100;
+        n = m * resultMap.size() / 100;
+    }
+
+    int *orders = new int[n];
+    order(orders, n, resultMap, false);
+    display_students(orders, n);
+    delete[] orders;
+    
+    return 0;
+}
+
+int changePassword(string &password){
+    string newPassword;
+    cout<<endl<<"Enter your previous password: ";
+    cin>>newPassword;
+    if(password != newPassword){
+        cout<<endl<<"Wrong password!!"<<endl;
+        return 0;
+    }
+
+    cout<<endl<<"Enter your new password(between 8 and 20 characters): ";
+    cin>>newPassword;
+    if(stringlength(newPassword) < 8 || stringlength(newPassword) > 20){
+        cout<<endl<<"Invalid length!!"<<endl;
+        return 0;
+    }
+
+    password = newPassword;
+    return 0;
+}
+
+bool isNewStudent(Student stud){
+    for(int i = 0; i < stud.myCourse.size(); ++i){
+        if(stud.myCourse[i].grade != -1){
+            return false;
+        }
+    }
+    return true;
+}
+
+bool teacher_teaches_course(string teacher, Course crs){
+    for(int i = 0; i < crs.teachers.size(); i++){
+        if(teacher == crs.teachers[i]){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void display_courses(int *orders, int n){
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+
+    if(n == 0) cout<<endl<<"There is no course that fits the criteria!!"<<endl;
+    else{
+        cout<<endl<<"\t\tCourse Information\n";
+        cout<<"____________________________________________________________________________________________________________________________________\n";
+        cout<<"|\tCourses name\t|\tCourse code\t|\tCredit hour\t|\tDepartment\t|\tYear\t|\tSemester\t|\n";
+        for(int i = 0; i < n; ++i){
+            cout<<"|\t"<<courses[orders[i]].name<<"\t|\t"<<courses[orders[i]].code<<"\t|\t"<<courses[orders[i]].crHr<<"\t|\t"<<courses[orders[i]].department<<"\t|\t"<<courses[orders[i]].year<<"\t|\t"<<courses[orders[i]].semester<<"\t|\n";
+            cout<<"------------------------------------------------------------------------------------------------------------------------------------\n";  
+        }
+    }
+
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+}
+
+void display_course_info(Course course){
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+
+    cout<<endl<<"Course name: "<<course.name<<endl;
+    cout<<"Course code: "<<course.code<<endl;
+    cout<<"Credit hour: "<<course.crHr<<endl;
+    cout<<"Department: "<<course.department<<endl;
+    cout<<"Year: "<<course.year<<"\tSemester: "<<course.semester<<endl;
+
+    for(int j = 0; j < course.prerequisites.size(); j++){
+        if(j == 0){
+            cout<<"Course codes of prerequisites: ";
+        }
+        else{
+            cout<<", ";
+        }
+        cout<<course.prerequisites[j];
+    }
+
+    cout<<"\nId of teachers that teach this course: ";
+    for(int j = 0; j < course.teachers.size(); j++){
+        cout<<course.teachers[j];
+        if(j != course.teachers.size() - 1){
+            cout<<", ";
+        }
+        else{
+            cout<<endl;
+        }
+    }
+
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+}
+
+void display_courses_forstaff(){
+    string department;
+
+    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    cout<<"Enter department (Enter All to select all department): ";
+    cin.ignore();
+    getline(cin, department);
+    department = strToUpper(department);
+
+    map<int, string> courseMap;
+    for(int i = 0; i < courses.size(); ++i){
+        if((department == "ALL") || (department == courses[i].department)){
+            courseMap.insert(pair<int, string>(i, courses[i].code));
+        }
+    }
+
+    int *orders = new int[courseMap.size()];
+    order(orders, courseMap.size(), courseMap);
+    display_courses(orders, courseMap.size());
+    delete[] orders;
+    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+}
+
+int courseRegister(string studId){
+    int index;
+    for(int i = 0; i < students.size(); ++i){
+        if(students[i].id == studId){
+            index = i;
+            break;
+        }
+        else if(i == students.size() - 1){
+            cout<<endl<<"There is no student with id "<<studId<<endl;
+            return 0;
+        }
+    }
+
+    cout<<endl<<"Courses "<<students[index].id<<" can register to:"<<endl;
+    for(int i = 0; i < courses.size(); ++i){
+        if(canRegister(courses[i], students[index])){
+            cout<<courses[i].code<<" ("<<courses[i].name<<')'<<endl;
+        }
+    }
+
+    string courseCode;
+
+    do{
+        cout<<endl<<"Enter the course code to register to the course (Enter 'X' to go back): ";
+        cin>>courseCode;
+        if(courseCode != "x" && courseCode != "X"){
+            registration(courseCode, students[index]);
+        }
+    }while(courseCode != "x" && courseCode != "X");
+
+    return 0;
+}
+
+bool canRegister(Course course, Student stud, bool reason){
+    if(course.department != "ALL" && course.department != stud.department){
+        if(reason) cout<<endl<<"Department doesn\'t match!";
+        return false;
+    }
+
+    if(stud.semester < (2 * (course.year - 1) + course.semester)){
+        if(reason) cout<<endl<<"The student can\'t take this course before Year "<<course.year<<" semester "<<course.semester<<'!';
+        return false;
+    }
+
+    if(stud.semesterLoad + course.crHr > 22){
+        if(reason) cout<<endl<<"The semester load of the student becomes more than 22!";
+        return false;
+    }
+
+    for(int i = 0; i < stud.myCourse.size(); ++i){
+        if((course.code == stud.myCourse[i].code) && (stud.myCourse[i].status == 'P' || stud.myCourse[i].grade == -1)){
+            if(reason) cout<<endl<<"Student "<<stud.id<<" has already learned (and passed) the course "<<course.code<<'!';
+            return false;
+        }
+    }
+
+    for(int i = 0; i < course.prerequisites.size(); ++i){
+        for(int j = 0; j < stud.myCourse.size(); ++j){
+            if((course.prerequisites[i] == stud.myCourse[j].code) && stud.myCourse[j].status == 'P'){
+                break;
+            }
+            else if(j == stud.myCourse.size() - 1){
+                if(reason) cout<<endl<<"The student needs to learn "<<course.prerequisites[i]<<" first!";
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+int registration(string code, Student &stud){
+    int index;
+    for(int i = 0; i < courses.size(); ++i){
+        if(courses[i].code == code){
+            index = i;
+            break;
+        }
+        else if(i == courses.size() - 1){
+            cout<<endl<<"There is no course with course code "<<code<<endl;
+            return 0;
+        }
+    }
+
+    if(canRegister(courses[index], stud, true)){
+        int index2 = -1;
+        for(int i = 0; i < stud.myCourse.size(); ++i){
+            if(courses[index].code == stud.myCourse[i].code){
+                index2 = i;
+                break;
+            }
+        }
+
+        if(index2 == -1){
+            StudCourse registeredCourse;
+            registeredCourse.status = 'R';
+            registeredCourse.code = courses[index].code;
+            registeredCourse.name = courses[index].name;
+            registeredCourse.crHr = courses[index].crHr;
+            registeredCourse.year = courses[index].year;
+            registeredCourse.semester = courses[index].semester;
+            registeredCourse.grade = -1;
+            registeredCourse.teacher = courses[index].teachers[(courses[index].currentTeacher % courses[index].teachers.size())];
+            courses[index].currentTeacher = (courses[index].currentTeacher + 1) % courses[index].teachers.size();
+            stud.myCourse.push_back(registeredCourse);
+        }
+        else{
+            stud.myCourse[index2].grade = -1;
+            stud.myCourse[index2].status = 'R';
+            stud.myCourse[index2].teacher = courses[index].teachers[(courses[index].currentTeacher % courses[index].teachers.size())];
+            courses[index].currentTeacher = (courses[index].currentTeacher + 1) % courses[index].teachers.size();
+        }
+
+        stud.semesterLoad += courses[index].crHr;
+        cout<<endl<<"Student "<<stud.id<<" have successfully registered to course "<<courses[index].code<<endl;
+    }
+    else{
+        cout<<endl<<"Student with id "<<stud.id<<" can NOT register to the course with code "<<code<<endl;
+    }
+
+    return 0;
 }
 
 #endif
