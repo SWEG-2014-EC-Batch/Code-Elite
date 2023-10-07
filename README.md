@@ -19,7 +19,7 @@
 - <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_1-part_1.cpp" target="_blank" rel="noreferrer">Bank account Calculator</a>  |  <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-II/Code%20Refactoring/Group_Project_1-1j_version2.cpp" target="_blank" rel="noreferrer">Version 2</a>
 - <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_1-part_2.cpp" target="_blank" rel="noreferrer">Pattern Generator</a>  |  <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-II/Code%20Refactoring/Group_Project_1-2j_version2.cpp" target="_blank" rel="noreferrer">Version 2</a>
 - <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-I/project-work/project_2.cpp" target="_blank" rel="noreferrer">Grade calculator</a>  |  <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-II/Code%20Refactoring/Group_project_2_version2.cpp" target="_blank" rel="noreferrer">Version 2</a>  |  <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-II/Code%20Refactoring/Group_project_2_version3.cpp" target="_blank" rel="noreferrer">Version 3</a>
-- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/tree/main/FoP-II/Project" target="_blank" rel="noreferrer">Student Record Management System</a>
+- <a href="https://github.com/SWEG-2015-EC-Batch/Code-Elite/blob/main/FoP-II/Project/Student_Record_Management_System.cpp" target="_blank" rel="noreferrer">Student Record Management System</a>
 
 ## 🔭 Currently working on
 
