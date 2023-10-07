@@ -178,6 +178,7 @@ int student(){
         cout<<endl<<"Your choice: ";
         cin>>menu;
         menu = toupper(menu);
+        
         switch (menu){
             case 'A':
                 display_student_info(students[index]);
@@ -186,6 +187,14 @@ int student(){
             case 'B':
                 if(students[index].status == 'G'){
                     cout<<endl<<"You can\'t register to any course because you have graduated!!";
+                    break;
+                }
+                else if(students[index].status == 'W'){
+                    cout<<endl<<"You can\'t register to any course because you have withdrawn!\nYou have to be readmitted to register to courses!";
+                    break;
+                }
+                else if(students[index].status == 'D'){
+                    cout<<endl<<"You can\'t register to any course because you are dismissed!\nAsk university adminstrators to register you to courses!";
                     break;
                 }
                 courseRegister(students[index].id);
@@ -246,8 +255,8 @@ void staff(){
         cout<<endl<<"Your choice: ";
         cin>>menu;
         menu = toupper(menu);
-        switch (menu)
-        {
+
+        switch (menu){
         case 'A':
             display_students_forstaff();
             break;
@@ -305,8 +314,8 @@ int signInToCourse(string tchId, string courseCode){
             cout<<endl<<"Your choice: ";
             cin>>menu;
             menu = toupper(menu);
-            switch (menu)
-            {
+
+            switch (menu){
             case 'A':
                 for(int i = 0; i < students.size(); ++i){
                     for(int j = 0; j < students[i].myCourse.size(); ++j){
@@ -462,22 +471,59 @@ void display_courses_info(Student stud){
     cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl<<endl;
 
     for(int i = 1; i <= stud.semester && i <= 10; ++i){
-        cout<<"\n\t\tYear "<<(i + 1) / 2<<", Semester "<<((i+1) % 2) + 1<<" Course information\n";
-        cout<<"_________________________________________________________________________________________________________\n";
-        cout<<"|\tCourse name\t|\tCourse code\t|\tGrade\t|\tGrade mark\t|\tStatus\t|\n";
+        string space = "                                             ";
+        int col1 = stringlength("Course Name");
+        int col2 = stringlength("Course Code");
+        int col3 = 5;
+        int col4 = stringlength("Grade Mark");
+        int col5 = stringlength("Status");
 
         for(int j = 0; j < stud.myCourse.size(); j++){
             if((stud.myCourse[j].year == (i + 1) / 2) && ((stud.myCourse[j].semester == (((i+1) % 2) + 1)))){
-                cout<<"|-------------------------------------------------------------------------------------------------------|\n";
-                cout<<"|\t"<<stud.myCourse[j].name<<"\t|\t"<<stud.myCourse[j].code<<"\t|\t";
-                stud.myCourse[j].grade == -1 ? cout<<"- " : cout<<stud.myCourse[j].grade;
-                cout<<"\t|\t"<<toLetter(stud.myCourse[j].grade)<<"\t|\t"<<statusToWords(stud.myCourse[j].status)<<"\t|\n";
+                col1 = highest(col1, stringlength(stud.myCourse[j].name));
+                col2 = highest(col2, stringlength(stud.myCourse[j].code));
+                col4 = highest(col4, stringlength(toLetter(stud.myCourse[j].grade)));
+                col5 = highest(col5, stringlength(statusToWords(stud.myCourse[j].status)));
             }
         }
-        
-        cout<<"|-------------------------------------------------------------------------------------------------------|\n";
-        cout<<" Year "<<(i + 1) / 2<<", Semester "<<((i+1) % 2) + 1<<" GPA: "<<semesterGPA(stud, i)<<endl<<endl;
 
+        int colNum = 16 + col1 + col2 + col3 + col4 + col5;
+        
+        cout<<endl<<endl;
+        cout<<strConcat(space, "Year: ", (colNum - 38) / 2, 5)<<(i + 1) / 2<<" Semester: "<<((i+1) % 2) + 1<<" Course information";
+        cout<<endl;
+        prints('_', colNum);
+        cout<<endl<<"| ";
+        cout<<strConcat("Course Name", space, stringlength("Course Name"), col1 - stringlength("Course Name"))<<" | ";
+        cout<<strConcat("Course Code", space, stringlength("Course Code"), col2 - stringlength("Course Code"))<<" | Grade | ";
+        cout<<strConcat("Grade Mark", space, stringlength("Grade Mark"), col4 - stringlength("Grade Mark"))<<" | ";
+        cout<<strConcat("Status", space, stringlength("Status"), col5 - stringlength("Status"))<<" | ";
+
+        cout<<endl<<"|-"; 
+        prints('-', col1); cout<<"-|-";
+        prints('-', col2); cout<<"-|-";
+        prints('-', col3); cout<<"-|-";
+        prints('-', col4); cout<<"-|-";
+        prints('-', col5); cout<<"-|";
+
+        for(int j = 0; j < stud.myCourse.size(); j++){
+            if((stud.myCourse[j].year == (i + 1) / 2) && ((stud.myCourse[j].semester == (((i+1) % 2) + 1)))){
+                cout<<endl<<"| ";
+                cout<<strConcat(stud.myCourse[j].name, space, stringlength(stud.myCourse[j].name), col1 - stringlength(stud.myCourse[j].name))<<" | ";
+                cout<<strConcat(stud.myCourse[j].code, space, stringlength(stud.myCourse[j].code), col2 - stringlength(stud.myCourse[j].code))<<" | ";
+                cout<<strConcat(strConcat(to_string(stud.myCourse[j].grade), "\0", 5, 0), space, stringlength(strConcat(to_string(stud.myCourse[j].grade), "\0", 5, 0)), col3 - stringlength(strConcat(to_string(stud.myCourse[j].grade), "\0", 5, 0)))<<" | ";
+                cout<<strConcat(toLetter(stud.myCourse[j].grade), space, stringlength(toLetter(stud.myCourse[j].grade)), col4 - stringlength(toLetter(stud.myCourse[j].grade)))<<" | ";
+                cout<<strConcat(statusToWords(stud.myCourse[j].status), space, stringlength(statusToWords(stud.myCourse[j].status)), col5 - stringlength(statusToWords(stud.myCourse[j].status)))<<" |";
+
+                cout<<endl<<"|-"; 
+                prints('-', col1); cout<<"-|-";
+                prints('-', col2); cout<<"-|-";
+                prints('-', col3); cout<<"-|-";
+                prints('-', col4); cout<<"-|-";
+                prints('-', col5); cout<<"-|";
+            }
+        }
+        cout<<endl<<" Year "<<(i + 1) / 2<<", Semester "<<((i+1) % 2) + 1<<" GPA: "<<semesterGPA(stud, i)<<endl<<endl;
     }
 
     cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
@@ -488,19 +534,86 @@ void display_students(int *orders, int n){
 
     if(n == 0) cout<<endl<<"There are no students that fit the criteria!!"<<endl;
     else{
-        cout<<"\t\tStudent Information\n";
-        cout<<"_________________________________________________________________________________________________________________________________________________________________\n";
-        cout<<"|\tFirst Name\t|\tLast Name\t|\tId\t|\tDepartment\t|\t";
-        if(students[orders[0]].status == 'G') cout<<"Graduation Year";
-        else cout<<"Year\t|\tSemester";
-        cout<<"\t|\tCGPA\t|\tStatus\t|\n";
-        cout<<"|---------------------------------------------------------------------------------------------------------------------------------------------------------------|\n";
+        string space = "                                             ";
+        int col1 = stringlength("First Name");
+        int col2 = stringlength("Last Name");
+        int col3 = stringlength("Id");
+        int col4 = stringlength("Department");
+        int col5, col5a;
+        if(students[orders[0]].status == 'G') col5 = stringlength("Graduation Year");
+        else{
+            col5 = stringlength("Year");
+            col5a = stringlength("Semester");
+        }
+        int col6 = highest(5, stringlength("CGPA"));
+        int col7 = stringlength("Status");
+
         for(int i = 0; i < n; ++i){
-            cout<<"|\t"<<students[orders[i]].name[0]<<"\t|\t"<<students[orders[i]].name[1]<<"\t|\t"<<students[orders[i]].id<<"\t|\t"<<students[orders[i]].department<<"\t|\t";
-            students[orders[i]].status == 'G' ? cout<<students[orders[i]].semester : cout<<(students[orders[i]].semester + 1)/ 2<<"\t|\t"<<((students[orders[i]].semester + 1) % 2) + 1;
-            cout<<"\t|\t"<<students[orders[i]].cgpa<<"\t|\t"<<statusToWords(students[orders[i]].status)<<"\t|"<<endl;
-            cout<<"|---------------------------------------------------------------------------------------------------------------------------------------------------------------|\n"; 
-        }   
+            col1 = highest(col1, stringlength(students[orders[i]].name[0]));
+            col2 = highest(col2, stringlength(students[orders[i]].name[1]));
+            col3 = highest(col3, stringlength(students[orders[i]].id));
+            col4 = highest(col4, stringlength(students[orders[i]].department));
+            if(students[orders[0]].status == 'G') col5 = highest(col5, stringlength(to_string(students[orders[i]].semester)));
+            else{
+                col5 = highest(col5, stringlength(to_string((students[orders[i]].semester + 1) / 2)));
+                col5a = highest(col5a, stringlength(to_string(((students[orders[i]].semester + 1) % 2) + 1)));
+            }
+            col7 = highest(col7, stringlength(statusToWords(students[orders[i]].status)));
+        }
+        int colNum = 22 + col1 + col2 + col3 + col4 + col5 + col6 + col7;
+        if(students[orders[0]].status != 'G') colNum = colNum + col5a + 3;
+
+        cout<<strConcat(space, "Student Information", (colNum - stringlength("Student Information")) / 2, stringlength("Student Information"));
+        cout<<endl<<endl;
+        prints('_', colNum);
+        cout<<endl<<"| ";
+        cout<<strConcat("First Name", space, stringlength("First Name"), col1 - stringlength("First Name"))<<" | ";
+        cout<<strConcat("Last Name", space, stringlength("Last Name"), col2 - stringlength("Last Name"))<<" | ";
+        cout<<strConcat("Id", space, stringlength("Id"), col3 - stringlength("Id"))<<" | ";
+        cout<<strConcat("Department", space, stringlength("Department"), col4 - stringlength("Department"))<<" | ";
+        if(students[orders[0]].status == 'G') cout<<strConcat("Graduation Year", space, stringlength("Graduation Year"), col5 - stringlength("Graduation Year"))<<" | ";
+        else{
+            cout<<strConcat("Year", space, stringlength("Year"), col5 - stringlength("Year"))<<" | ";
+            cout<<strConcat("Semester", space, stringlength("Semester"), col5a - stringlength("Semester"))<<" | ";
+        }
+        cout<<strConcat("CGPA", space, stringlength("CGPA"), col6 - stringlength("CGPA"))<<" | ";
+        cout<<strConcat("Status", space, stringlength("Status"), col7 - stringlength("Status"))<<" |";
+
+        cout<<endl<<"|-"; 
+        prints('-', col1); cout<<"-|-";
+        prints('-', col2); cout<<"-|-";
+        prints('-', col3); cout<<"-|-";
+        prints('-', col4); cout<<"-|-";
+        prints('-', col5); cout<<"-|-";
+        if(students[orders[0]].status != 'G') {prints('-', col5a); cout<<"-|-";}
+        prints('-', col6); cout<<"-|-";
+        prints('-', col7); cout<<"-|";
+
+        for(int i = 0; i < n; ++i){
+            cout<<endl<<"| ";
+            cout<<strConcat(students[orders[i]].name[0], space, stringlength(students[orders[i]].name[0]), col1 - stringlength(students[orders[i]].name[0]))<<" | ";
+            cout<<strConcat(students[orders[i]].name[1], space, stringlength(students[orders[i]].name[1]), col2 - stringlength(students[orders[i]].name[1]))<<" | ";
+            cout<<strConcat(students[orders[i]].id, space, stringlength(students[orders[i]].id), col3 - stringlength(students[orders[i]].id))<<" | ";
+            cout<<strConcat(students[orders[i]].department, space, stringlength(students[orders[i]].department), col4 - stringlength(students[orders[i]].department))<<" | ";
+            if(students[orders[0]].status == 'G') cout<<strConcat(to_string(students[orders[i]].semester), space, stringlength(to_string(students[orders[i]].semester)), col5 - stringlength(to_string(students[orders[i]].semester)))<<" | ";
+            else{
+                cout<<strConcat(to_string((students[orders[i]].semester + 1) / 2), space, stringlength(to_string((students[orders[i]].semester + 1) / 2)), col5 - stringlength(to_string((students[orders[i]].semester + 1) / 2)))<<" | ";
+                cout<<strConcat(to_string(((students[orders[i]].semester + 1) % 2) + 1), space, stringlength(to_string(((students[orders[i]].semester + 1) % 2) + 1)), col5a - stringlength(to_string(((students[orders[i]].semester + 1) % 2) + 1)))<<" | ";
+            }
+            cout<<strConcat(strConcat(to_string(students[orders[i]].cgpa), "\0", 5, 0), space, stringlength(strConcat(to_string(students[orders[i]].cgpa), "\0", 5, 0)), col6 - stringlength(strConcat(to_string(students[orders[i]].cgpa), "\0", 5, 0)))<<" | ";
+            cout<<strConcat(statusToWords(students[orders[i]].status), space, stringlength(statusToWords(students[orders[i]].status)), col7 - stringlength(statusToWords(students[orders[i]].status)))<<" |";
+
+            cout<<endl<<"|-"; 
+            prints('-', col1); cout<<"-|-";
+
+            prints('-', col2); cout<<"-|-";
+            prints('-', col3); cout<<"-|-";
+            prints('-', col4); cout<<"-|-";
+            prints('-', col5); cout<<"-|-";
+            if(students[orders[0]].status != 'G') {prints('-', col5a); cout<<"-|-";}
+            prints('-', col6); cout<<"-|-";
+            prints('-', col7); cout<<"-|";
+        } 
     }
     
     cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
@@ -708,13 +821,60 @@ void display_courses(int *orders, int n){
 
     if(n == 0) cout<<endl<<"There is no course that fits the criteria!!"<<endl;
     else{
-        cout<<endl<<"\t\tCourse Information\n";
-        cout<<"_________________________________________________________________________________________________________________________________________\n";
-        cout<<"|\tCourses name\t|\tCourse code\t|\tCredit hour\t|\tDepartment\t|\tYear\t|\tSemester\t|\n";
-        cout<<"|---------------------------------------------------------------------------------------------------------------------------------------|\n";  
+        string space = "                                             ";
+        int col1 = stringlength("Course Name");
+        int col2 = stringlength("Course Code");
+        int col3 = stringlength("Credit Hour");
+        int col4 = stringlength("Department");
+        int col5 = stringlength("Year");
+        int col6 = stringlength("Semester");
+
         for(int i = 0; i < n; ++i){
-            cout<<"|  "<<courses[orders[i]].name<<"\t|\t"<<courses[orders[i]].code<<"\t|\t"<<courses[orders[i]].crHr<<"\t|\t"<<courses[orders[i]].department<<"\t|\t"<<courses[orders[i]].year<<"\t|\t"<<courses[orders[i]].semester<<"\t|\n";
-            cout<<"|---------------------------------------------------------------------------------------------------------------------------------------|\n";  
+            col1 = highest(col1, stringlength(courses[orders[i]].name));
+            col2 = highest(col2, stringlength(courses[orders[i]].code));
+            col3 = highest(col3, stringlength(to_string(courses[orders[i]].crHr)));
+            col4 = highest(col4, stringlength(courses[orders[i]].department));
+            col5 = highest(col5, stringlength(to_string(courses[orders[i]].year)));
+            col6 = highest(col6, stringlength(to_string(courses[orders[i]].semester)));
+        }
+        int colNum = 19 + col1 + col2 + col3 + col4 + col5 + col6;
+
+        cout<<strConcat(space, "Course Information", colNum - stringlength("Course Information"), stringlength("Course Information"));
+        cout<<endl<<endl;
+        prints('_', colNum);
+
+        cout<<endl<<"| ";
+        cout<<strConcat("Course Name", space, stringlength("Course Name"), col1 - stringlength("Course Name"))<<" | ";
+        cout<<strConcat("Course Code", space, stringlength("Course Code"), col2 - stringlength("Course Code"))<<" | ";
+        cout<<strConcat("Credit Hour", space, stringlength("Credit Hour"), col3 - stringlength("Credit Hour"))<<" | ";
+        cout<<strConcat("Department", space, stringlength("Department"), col4 - stringlength("Department"))<<" | ";
+        cout<<strConcat("Year", space, stringlength("Year"), col5 - stringlength("Year"))<<" | ";
+        cout<<strConcat("Semester", space, stringlength("Semester"), col6 - stringlength("Semester"))<<" |";
+
+        cout<<endl<<"|-"; 
+        prints('-', col1); cout<<"-|-";
+        prints('-', col2); cout<<"-|-";
+        prints('-', col3); cout<<"-|-";
+        prints('-', col4); cout<<"-|-";
+        prints('-', col5); cout<<"-|-";
+        prints('-', col6); cout<<"-|";
+
+        for(int i = 0; i < n; ++i){
+            cout<<endl<<"| ";
+            cout<<strConcat(courses[orders[i]].name, space, stringlength(courses[orders[i]].name), col1 - stringlength(courses[orders[i]].name))<<" | ";
+            cout<<strConcat(courses[orders[i]].code, space, stringlength(courses[orders[i]].code), col2 - stringlength(courses[orders[i]].code))<<" | ";
+            cout<<strConcat(to_string(courses[orders[i]].crHr), space, stringlength(to_string(courses[orders[i]].crHr)), col3 - stringlength(to_string(courses[orders[i]].crHr)))<<" | ";
+            cout<<strConcat(courses[orders[i]].department, space, stringlength(courses[orders[i]].department), col4 - stringlength(courses[orders[i]].department))<<" | ";
+            cout<<strConcat(to_string(courses[orders[i]].year), space, stringlength(to_string(courses[orders[i]].year)), col5 - stringlength(to_string(courses[orders[i]].year)))<<" | ";
+            cout<<strConcat(to_string(courses[orders[i]].semester), space, stringlength(to_string(courses[orders[i]].semester)), col6 - stringlength(to_string(courses[orders[i]].semester)))<<" |";
+
+            cout<<endl<<"|-"; 
+            prints('-', col1); cout<<"-|-";
+            prints('-', col2); cout<<"-|-";
+            prints('-', col3); cout<<"-|-";
+            prints('-', col4); cout<<"-|-";
+            prints('-', col5); cout<<"-|-";
+            prints('-', col6); cout<<"-|";
         }
     }
 
@@ -809,6 +969,7 @@ int courseRegister(string studId){
 }
 
 bool canRegister(Course course, Student stud, bool reason){
+    if(stud.status == 'W' || stud.status == 'G') return false;
     if(course.department != "ALL" && course.department != stud.department){
         if(reason) cout<<endl<<"Department doesn\'t match!";
         return false;
@@ -973,6 +1134,8 @@ void refresh(Student &stud, bool changePassword){
     }
 
     stud.cgpa = calculateCgpa(stud);
+
+    if(stud.semester >= 1000) stud.status = 'G';
 
     if(isNewStudent(stud)){
         stud.status = 'N';
@@ -1233,6 +1396,12 @@ int updateStudent(Student &stud){
             if(value2 == 'C' || value2 == 'W'){
                 stud.status = value2;
                 change = true;
+
+                if(stud.status == 'W'){
+                    for(int i = 0; i < stud.myCourse.size(); ++i){
+                        if(stud.myCourse[i].status == 'R') dropCourse(stud.myCourse[i].code, stud);
+                    }
+                }
             }
             else cout<<endl<<"Invalid Status value!";
             break;
@@ -1822,6 +1991,7 @@ int statistical_report(){
 
     for(int i = 0; i < students.size(); ++i){
         if(students[i].semester > 1000){
+            if(graduationYears.size() == 0) graduationYears.push_back(students[i].semester);
             for(int j = 0; j < graduationYears.size(); ++j){
                 if(students[i].semester == graduationYears[j]) break;
                 else if(j == graduationYears.size() - 1){
@@ -1841,10 +2011,26 @@ int statistical_report(){
 
     cout<<endl<<"________________________________________________";
     cout<<endl<<"| Batch | Passed | Warned | Failed | Withdraws |\n";
-    cout<<"|----------------------------------------------|\n";
+    cout<<"|-------|--------|--------|--------|-----------|\n";
     for(int i = 1; i <= 5; ++i){
-        cout<<"|   "<<i<<"   |    "<<howMany(i, department, 'P')<<"   |    "<<howMany(i, department, '!')<<"   |    "<<howMany(i, department, 'D')<<"   |     "<<howMany(i, department, 'W')<<"     |\n";
-        cout<<"|----------------------------------------------|\n";
+        cout<<"|   "<<i<<"   |";
+        prints(' ', (8 - stringlength(to_string(howMany(i, department, 'P')))) / 2);
+        cout<<howMany(i, department, 'P');
+        prints(' ', (9 - stringlength(to_string(howMany(i, department, 'P')))) / 2);
+        cout<<'|';
+        prints(' ', (8 - stringlength(to_string(howMany(i, department, '!')))) / 2);
+        cout<<howMany(i, department, '!');
+        prints(' ', (9 - stringlength(to_string(howMany(i, department, '!')))) / 2);
+        cout<<'|';
+        prints(' ', (8 - stringlength(to_string(howMany(i, department, 'F')))) / 2);
+        cout<<howMany(i, department, 'F');
+        prints(' ', (9 - stringlength(to_string(howMany(i, department, 'F')))) / 2);
+        cout<<'|';
+        prints(' ', (11 - stringlength(to_string(howMany(i, department, 'W')))) / 2);
+        cout<<howMany(i, department, 'W');
+        prints(' ', (12 - stringlength(to_string(howMany(i, department, 'W')))) / 2);
+        cout<<'|';
+        cout<<"\n|-------|--------|--------|--------|-----------|\n";
     }
 
     cout<<endl<<endl<<"Number of New Students: "<<howMany(1, department, 'N');
@@ -1856,10 +2042,18 @@ int statistical_report(){
     }
     cout<<endl<<endl<<"________________________________________";
     cout<<endl<<"| Graduating Year | Number of Students |";
-    cout<<endl<<"|--------------------------------------|\n";
+    cout<<endl<<"|-----------------|--------------------|\n";
     for(int i = 0; i < graduationYears.size(); ++i){
-        cout<<"|      "<<graduationYears[i]<<"       |        "<<howMany(graduationYears[i], department)<<"         |\n";
-        cout<<"|--------------------------------------|\n";
+        cout<<'|';
+        prints(' ', (17 - stringlength(to_string(graduationYears[i]))) / 2);
+        cout<<graduationYears[i];
+        prints(' ', (18 - stringlength(to_string(graduationYears[i]))) / 2);
+        cout<<'|';
+        prints(' ', (20 - stringlength(to_string(howMany(graduationYears[i], department)))) / 2);
+        cout<<howMany(graduationYears[i], department);
+        prints(' ', (21 - stringlength(to_string(howMany(graduationYears[i], department)))) / 2);
+        cout<<'|';
+        cout<<"\n|-----------------|--------------------|\n";
     }
 
     cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
@@ -1885,7 +2079,7 @@ int howMany(int year, string department, char status){
     }
     else{
         for(int i = 0; i < students.size(); ++i){
-            if(students[i].semester == year && ((department == "ALL") || (students[i].department == department)) && (students[i].status == status)){
+            if(students[i].semester == year && ((department == "ALL") || (students[i].department == department))){
                 sum++;
             }
         }

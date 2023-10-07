@@ -3,10 +3,14 @@
 
 #include <iostream>
 using namespace std;
-int stringlength(string str);  //returns the length of a string
-string strToLower(string str);  //returns the lower case version of a string
-string strToUpper(string str);  //returns the upper case version of a string
-string strConcat(string str1, string str2, int length1 = -1, int length2 = -1);  //concatenates the two strings and returns the resulting string
+int stringlength(string str);  // returns the length of a string
+string strToLower(string str);  // returns the lower case version of a string
+string strToUpper(string str);  // returns the upper case version of a string
+string strConcat(string str1, string str2, int length1 = -1, int length2 = -1);  // concatenates the two strings and returns the resulting string
+template <typename T>
+T highest(T n, T m);  // returns the larger value of the two parameters
+template <typename T>
+void prints(T value, int n = 1);  // prints the first parameter n times on terminal
 
 int stringlength(string str){
     int length = 0;
@@ -49,6 +53,17 @@ string strConcat(string str1, string str2, int length1, int length2){
     for(int i = 0; i < length2; ++i) result[length1 + i] = str2[i];
 
     return result;
+}
+
+template <typename T>
+T highest(T n, T m){
+    if(n > m) return n;
+    return m;
+}
+
+template <typename T>
+void prints(T value, int n){
+    for(int i = 0; i < n; ++i) cout<<value;
 }
 
 #endif

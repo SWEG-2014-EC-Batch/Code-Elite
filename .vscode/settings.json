@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "ostream": "cpp",
+        "iostream": "cpp",
+        "__availability": "cpp",
+        "__config": "cpp",
+        "__tree": "cpp",
+        "atomic": "cpp",
+        "exception": "cpp",
+        "string": "cpp",
+        "vector": "cpp"
+    }
+}

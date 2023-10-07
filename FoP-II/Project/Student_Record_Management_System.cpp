@@ -4,7 +4,6 @@
 using namespace std;
 
 int main() {
-
     readFromFile();
 
     char signIn;
