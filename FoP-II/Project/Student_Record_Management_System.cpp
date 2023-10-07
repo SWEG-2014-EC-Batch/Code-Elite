@@ -29,7 +29,7 @@ int main() {
         }
     }while(signIn == 'A' || signIn == 'B' || signIn == 'C');
     
-    save();
+    if(change) save();
 
     return 0;
 }

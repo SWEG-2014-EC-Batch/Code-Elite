@@ -49,6 +49,7 @@ struct Student{
     vector<StudCourse> myCourse;
 };
 
+bool change;
 vector<Student> students;  // student vector
 vector<Course> courses;  // course vector
 
@@ -114,7 +115,7 @@ int updateCourse(Course&);  // modifies a given course record
 int deleteCourse(int);  // deletes a given course from course record
 int insertNewCourse();  // inserts a new course to course record
 
-void statistical_report();  // displays a statistical report of a given year and department
+int statistical_report();  // displays a statistical report of a given year and department
 
 // display functions
 void display_students_forstaff();  // displays students in a given year and department
@@ -188,6 +189,7 @@ int student(){
                     break;
                 }
                 courseRegister(students[index].id);
+                if(change) save();
                 break;
 
             case 'C':
@@ -198,6 +200,7 @@ int student(){
                 cout<<endl<<"Enter the code of the course you want to drop (Enter 'X' to go back): ";
                 cin>>courseCode;
                 if(courseCode != "x" && courseCode != "X") dropCourse(courseCode, students[index]);
+                if(change) save();
                 break;
 
             case 'D':
@@ -206,6 +209,7 @@ int student(){
 
             case 'E':
                 changePassword(students[index].password);
+                if(change) save();
                 break;
         }
     }while(menu == 'A' || menu == 'B' || menu == 'C' || menu == 'D' || menu == 'E');
@@ -223,6 +227,7 @@ void teacher(){
         cout<<endl<<"Please enter course Code (Enter 'X' to go back): ";
         cin>>courseCode;
         if(courseCode != "x" && courseCode != "X") signInToCourse(tchId, courseCode);
+        if(change) save();
     }while(courseCode != "x" && courseCode != "X");
 }
 
@@ -305,12 +310,13 @@ int signInToCourse(string tchId, string courseCode){
             case 'A':
                 for(int i = 0; i < students.size(); ++i){
                     for(int j = 0; j < students[i].myCourse.size(); ++j){
-                        if((courses[index].code == students[i].myCourse[j].code) && (tchId == students[i].myCourse[j].teacher) && students[i].status != 'P'){
-                            cout<<endl<<students[i].id<<'\t'<<students[i].name;
+                        if((courses[index].code == students[i].myCourse[j].code) && (tchId == students[i].myCourse[j].teacher) && students[i].myCourse[j].status == 'R'){
+                            cout<<endl<<students[i].id<<'\t'<<students[i].name[0]<<' '<<students[i].name[1];
                             break;
                         }
                     }
                 }
+                cout<<endl;
                 break;
             
             case 'B':
@@ -348,7 +354,7 @@ int updateStudentCourseGrade(string tchId, string studId, Course course){
     }
 
     for(int i = 0; i < students[index].myCourse.size(); ++i){
-        if((course.code == students[index].myCourse[i].code) && (tchId == students[index].myCourse[i].teacher) && students[index].status == 'R'){
+        if((course.code == students[index].myCourse[i].code) && (tchId == students[index].myCourse[i].teacher) && students[index].myCourse[i].status == 'R'){
             index2 = i;
             break;
         }
@@ -365,6 +371,7 @@ int updateStudentCourseGrade(string tchId, string studId, Course course){
 
         if((grade >= 0 && grade <= 100) || grade == 101){
             students[index].myCourse[index2].grade = grade;
+            change = true;
             refresh(students[index]);
         }
         else{
@@ -422,9 +429,11 @@ string toLetter(float grade){
 float semesterGPA(Student stud, int semester){
     int totalCrHr = 0;
     float totalPoint = 0;
+    int year = (semester + 1) / 2;
+    int sem = ((semester + 1) % 2) + 1;
 
     for(int i = 0; i < stud.myCourse.size(); i++){
-        if(stud.myCourse[i].year == ((semester + 1) / 2) && stud.myCourse[i].semester == (((semester + 1) % 2) + 1) && (stud.myCourse[i].status == 'P' || stud.myCourse[i].status == 'F')){
+        if(stud.myCourse[i].year == year && stud.myCourse[i].semester == sem && (stud.myCourse[i].status == 'P' || stud.myCourse[i].status == 'F')){
             totalPoint += (stud.myCourse[i].crHr * toPoint(stud.myCourse[i].grade));
             totalCrHr += stud.myCourse[i].crHr;
         }
@@ -450,54 +459,55 @@ float calculateCgpa(Student stud){
 }
 
 void display_courses_info(Student stud){
-    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl<<endl;
 
     for(int i = 1; i <= stud.semester && i <= 10; ++i){
-        cout<<"\t\tYear "<<(i + 1) / 2<<", Semester "<<((i+1) % 2) + 1<<" Course information\n";
-        cout<<"____________________________________________________________________________________________________________________________________\n";
+        cout<<"\n\t\tYear "<<(i + 1) / 2<<", Semester "<<((i+1) % 2) + 1<<" Course information\n";
+        cout<<"_________________________________________________________________________________________________________\n";
         cout<<"|\tCourse name\t|\tCourse code\t|\tGrade\t|\tGrade mark\t|\tStatus\t|\n";
 
         for(int j = 0; j < stud.myCourse.size(); j++){
-            if((stud.myCourse[j].year == (i + 1) / 2) && (( stud.myCourse[j].semester = (((i+1) % 2) + 1)))){
-                cout<<"------------------------------------------------------------------------------------------------------------------------------------\n";
+            if((stud.myCourse[j].year == (i + 1) / 2) && ((stud.myCourse[j].semester == (((i+1) % 2) + 1)))){
+                cout<<"|-------------------------------------------------------------------------------------------------------|\n";
                 cout<<"|\t"<<stud.myCourse[j].name<<"\t|\t"<<stud.myCourse[j].code<<"\t|\t";
                 stud.myCourse[j].grade == -1 ? cout<<"- " : cout<<stud.myCourse[j].grade;
                 cout<<"\t|\t"<<toLetter(stud.myCourse[j].grade)<<"\t|\t"<<statusToWords(stud.myCourse[j].status)<<"\t|\n";
             }
         }
         
-        cout<<"____________________________________________________________________________________________________________________________________\n";
-        cout<<"\n|Year "<<(i + 1) / 2<<", Semester "<<((i+1) % 2) + 1<<" GPA: "<<semesterGPA(stud, i)<<'\n';
-        cout<<"____________________________________________________________________________________________________________________________________\n";
+        cout<<"|-------------------------------------------------------------------------------------------------------|\n";
+        cout<<" Year "<<(i + 1) / 2<<", Semester "<<((i+1) % 2) + 1<<" GPA: "<<semesterGPA(stud, i)<<endl<<endl;
 
     }
 
-    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
 }
 
 void display_students(int *orders, int n){
-    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl<<endl;
 
     if(n == 0) cout<<endl<<"There are no students that fit the criteria!!"<<endl;
     else{
         cout<<"\t\tStudent Information\n";
-        cout<<"____________________________________________________________________________________________________________________________________\n";
-        cout<<"|\tFirst Name\t|\tLast Name\t|\tId\t|Department\t|\t";
-        if(students[orders[0]].status == 'G') cout<<"Graduation ";
-        cout<<"Year\t|\tCGPA\t|Status\t|\n";
+        cout<<"_________________________________________________________________________________________________________________________________________________________________\n";
+        cout<<"|\tFirst Name\t|\tLast Name\t|\tId\t|\tDepartment\t|\t";
+        if(students[orders[0]].status == 'G') cout<<"Graduation Year";
+        else cout<<"Year\t|\tSemester";
+        cout<<"\t|\tCGPA\t|\tStatus\t|\n";
+        cout<<"|---------------------------------------------------------------------------------------------------------------------------------------------------------------|\n";
         for(int i = 0; i < n; ++i){
             cout<<"|\t"<<students[orders[i]].name[0]<<"\t|\t"<<students[orders[i]].name[1]<<"\t|\t"<<students[orders[i]].id<<"\t|\t"<<students[orders[i]].department<<"\t|\t";
-            students[orders[i]].status == 'G' ? cout<<students[orders[i]].semester : cout<<(students[orders[i]].semester + 1)/ 2;
+            students[orders[i]].status == 'G' ? cout<<students[orders[i]].semester : cout<<(students[orders[i]].semester + 1)/ 2<<"\t|\t"<<((students[orders[i]].semester + 1) % 2) + 1;
             cout<<"\t|\t"<<students[orders[i]].cgpa<<"\t|\t"<<statusToWords(students[orders[i]].status)<<"\t|"<<endl;
-            cout<<"------------------------------------------------------------------------------------------------------------------------------------\n"; 
+            cout<<"|---------------------------------------------------------------------------------------------------------------------------------------------------------------|\n"; 
         }   
     }
     
-    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
 }
 
 void display_student_info(Student stud){
-    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl<<endl;
 
     cout<<endl<<"\tStudent Information\n";
     cout<<endl<<"Student Name: "<<stud.name[0]<<' '<<stud.name[1];
@@ -510,13 +520,13 @@ void display_student_info(Student stud){
         else cout<<stud.semester;
     }
     else{
-        cout<<endl<<"Year: "<<(stud.semester + 1) / 2<<"\tSemester "<<((stud.semester + 1) % 2) + 1;
+        cout<<endl<<"Year: "<<(stud.semester + 1) / 2<<"\tSemester: "<<((stud.semester + 1) % 2) + 1;
         cout<<endl<<"Semester Load: "<<stud.semesterLoad;
     }
     cout<<endl<<"Student CGPA: "<<stud.cgpa;
     cout<<endl<<"Student Rank: "<<stud.rank<<endl;
 
-    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
 }
 
 void display_students_forstaff(){
@@ -668,6 +678,8 @@ int changePassword(string &password){
         return 0;
     }
 
+    cout<<endl<<"You have successfully changed your password";
+    change = true;
     password = newPassword;
     return 0;
 }
@@ -692,24 +704,25 @@ bool teacher_teaches_course(string teacher, Course crs){
 }
 
 void display_courses(int *orders, int n){
-    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl<<endl;
 
     if(n == 0) cout<<endl<<"There is no course that fits the criteria!!"<<endl;
     else{
         cout<<endl<<"\t\tCourse Information\n";
-        cout<<"____________________________________________________________________________________________________________________________________\n";
+        cout<<"_________________________________________________________________________________________________________________________________________\n";
         cout<<"|\tCourses name\t|\tCourse code\t|\tCredit hour\t|\tDepartment\t|\tYear\t|\tSemester\t|\n";
+        cout<<"|---------------------------------------------------------------------------------------------------------------------------------------|\n";  
         for(int i = 0; i < n; ++i){
-            cout<<"|\t"<<courses[orders[i]].name<<"\t|\t"<<courses[orders[i]].code<<"\t|\t"<<courses[orders[i]].crHr<<"\t|\t"<<courses[orders[i]].department<<"\t|\t"<<courses[orders[i]].year<<"\t|\t"<<courses[orders[i]].semester<<"\t|\n";
-            cout<<"------------------------------------------------------------------------------------------------------------------------------------\n";  
+            cout<<"|  "<<courses[orders[i]].name<<"\t|\t"<<courses[orders[i]].code<<"\t|\t"<<courses[orders[i]].crHr<<"\t|\t"<<courses[orders[i]].department<<"\t|\t"<<courses[orders[i]].year<<"\t|\t"<<courses[orders[i]].semester<<"\t|\n";
+            cout<<"|---------------------------------------------------------------------------------------------------------------------------------------|\n";  
         }
     }
 
-    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
 }
 
 void display_course_info(Course course){
-    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl<<endl;
 
     cout<<endl<<"Course name: "<<course.name<<endl;
     cout<<"Course code: "<<course.code<<endl;
@@ -738,13 +751,12 @@ void display_course_info(Course course){
         }
     }
 
-    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
 }
 
 void display_courses_forstaff(){
     string department;
 
-    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
     cout<<"Enter department (Enter All to select all department): ";
     cin.ignore();
     getline(cin, department);
@@ -761,7 +773,6 @@ void display_courses_forstaff(){
     order(orders, courseMap.size(), courseMap);
     display_courses(orders, courseMap.size());
     delete[] orders;
-    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
 }
 
 int courseRegister(string studId){
@@ -878,6 +889,7 @@ int registration(string code, Student &stud){
         }
 
         stud.semesterLoad += courses[index].crHr;
+        change = true;
         cout<<endl<<"Student "<<stud.id<<" have successfully registered to course "<<courses[index].code<<endl;
     }
     else{
@@ -987,28 +999,39 @@ void refresh(Student &stud, bool changePassword){
 
 int promote(Student &stud){
     if(stud.status == 'D' && stud.status == 'W' && stud.status == 'G') return 0;
+    bool canPass = false;
+    int year = (stud.semester + 1) / 2;
+    int semester = ((stud.semester + 1) % 2) + 1;
+
+    for(int j = 0; j < stud.myCourse.size(); ++j){
+        if(stud.myCourse[j].year == year && stud.myCourse[j].semester == semester){
+            if(stud.myCourse[j].status == 'R') return 0;
+            else if(stud.myCourse[j].status == 'P') canPass = true;
+        }
+    }
 
     if(stud.semester < 10){
-        int year = (stud.semester + 1) / 2;
-        int semester = ((stud.semester + 1) % 2) + 1;
-
-        for(int j = 0; j < stud.myCourse.size(); ++j){
-            if(stud.myCourse[j].year == year && stud.myCourse[j].semester == semester && stud.myCourse[j].grade == -1) return 0;
+        if(canPass){
+            stud.semester++;
+            change = true;
         }
-
-        stud.semester++;
     }
-    else {
+    else if(canPass){
         bool canGraduate = true;
-        for(int j = 0; j < stud.myCourse.size(); ++j){
-            if(stud.myCourse[j].status != 'P'){
-                canGraduate = false;
-                break;
+
+        for(int i = 0; canGraduate && i < courses.size(); ++i){
+            if(courses[i].department == stud.department){
+                cout<<endl<<"course "<<i;
+                for(int j = 0; j < stud.myCourse.size(); ++j){
+                    if((courses[i].code == stud.myCourse[j].code) && stud.myCourse[j].status == 'P') break;
+                    else if(j == stud.myCourse.size() - 1) canGraduate = false;
+                }
             }
         }
 
         if(canGraduate) stud.semester = 1000;
         else stud.semester = 11;
+        cout<<endl<<stud.semester;
     }
 
     return 0;
@@ -1057,10 +1080,12 @@ int manipulateStudentRecord(){
         switch(menu){
             case 'A':
                 recordNewStudent();
+                if(change) save();
                 break;
 
             case 'B':
                 updateExistingStudent();
+                if(change) save();
                 break;
         }
     }while(menu == 'A' || menu == 'B');
@@ -1096,6 +1121,7 @@ int recordNewStudent(){
         }
     }
 
+    change = true;
     refresh(students[students.size() - 1], true);
 
     return 0;
@@ -1147,20 +1173,32 @@ int updateStudent(Student &stud){
             cout<<endl<<"The student's current name is "<<stud.name[0]<<' '<<stud.name[1]<<' '<<stud.name[2]<<endl;
             cout<<endl<<"Enter the new first name (Enter '=' to keep the current name): ";
             cin>>value;
-            if(value != "=") stud.name[0] = value;
+            if(value != "="){
+                stud.name[0] = value;
+                change = true;
+            }
             cout<<endl<<"Enter the new father's name (Enter '=' to keep the current name): ";
             cin>>value;
-            if(value != "=") stud.name[1] = value;
+            if(value != "="){
+                stud.name[1] = value;
+                change = true;
+            }
             cout<<endl<<"Enter the new grandfather's name (Enter '=' to keep the current name): ";
             cin>>value;
-            if(value != "=") stud.name[2] = value;
+            if(value != "="){
+                stud.name[2] = value;
+                change = true;
+            }
             break;
 
         case 'B':
             cout<<endl<<"The student's current id is "<<stud.id;
             cout<<endl<<"Enter the new id (Enter '=' to keep the current id): ";
             cin>>value;
-            if(value != "=") stud.id = value;
+            if(value != "="){
+                stud.id = value;
+                change = true;
+            }
             break;
 
         case 'C':
@@ -1168,7 +1206,10 @@ int updateStudent(Student &stud){
             cout<<endl<<"Enter the new department (Enter '=' to keep the current department): ";
             cin.ignore();
             getline(cin, value);
-            if(value != "=") stud.department = value;
+            if(value != "="){
+                stud.department = value;
+                change = true;
+            }
             break;
 
         case 'D':
@@ -1185,11 +1226,14 @@ int updateStudent(Student &stud){
             
         case 'F':
             cout<<endl<<"The student's current status is '"<<statusToWords(stud.status)<<"' ";
-            cout<<endl<<"Enter 'W' for withdrawal and 'C' be readmission: ";
+            cout<<endl<<"Enter 'W' for withdrawal and 'C' for readmission: ";
             cin>>value2;
             value2 = toupper(value2);
 
-            if(value2 == 'C' || value2 == 'W') stud.status = value2;
+            if(value2 == 'C' || value2 == 'W'){
+                stud.status = value2;
+                change = true;
+            }
             else cout<<endl<<"Invalid Status value!";
             break;
         }
@@ -1214,6 +1258,8 @@ int dropCourse(string courseCode, Student &stud){
         }
     }
 
+    cout<<endl<<"You have successfully droped the course "<<courseCode;
+    change = true;
     stud.myCourse.erase(stud.myCourse.begin() + index);
 
     return 0;
@@ -1233,6 +1279,7 @@ int manipulateCourseRecord(){
         switch(menu){
             case 'A':
                 insertNewCourse();
+                if(change) save();
                 break;
 
             case 'B':
@@ -1326,6 +1373,8 @@ int insertNewCourse(){
 
     course.currentTeacher = 0;
     courses.push_back(course);
+    cout<<endl<<"You have successfully inserted course "<<courses[courses.size() - 1].code;
+    change =  true;
 
     return 0;
 }
@@ -1363,6 +1412,7 @@ int updateExistingCourse(){
         switch(menu){
             case 'A':
                 updateCourse(courses[index]);
+                if(change) save();
                 break;
 
             case 'B':
@@ -1372,6 +1422,7 @@ int updateExistingCourse(){
                 menu2 = toupper(menu2);
                 if(menu2 != 'Y') break;
                 deleteCourse(index);
+                if(change) save();
                 break;
         }
     }while(menu == 'A');
@@ -1402,15 +1453,22 @@ int updateCourse(Course &course){
             case 'A':
                 cout<<endl<<"The course's current name is "<<course.name;
                 cout<<endl<<"Enter the new name (Enter '=' to keep the current name): ";
-                cin>>value;
-                if(value != "=") course.name = value;
+                cin.ignore();
+                getline(cin, value);
+                if(value != "="){
+                    course.name = value;
+                    change = true;
+                }
                 break;
 
             case 'B':
                 cout<<endl<<"The course's current credit hour is "<<course.crHr;
                 cout<<endl<<"Enter the new credit hour (Enter '-1' to keep the current credit hour): ";
                 cin>>value2;
-                if(value2 >= 0) course.crHr = value2;
+                if(value2 >= 0){
+                    course.crHr = value2;
+                    change = true;
+                }
                 break;
 
             case 'C':
@@ -1426,7 +1484,10 @@ int updateCourse(Course &course){
                                 break;
                             }
                         }
-                        if(value2 == 0) course.prerequisites.push_back(value);
+                        if(value2 == 0){
+                            course.prerequisites.push_back(value);
+                            change = true;
+                        }
                     }
                 }while(value != "=");
                 break;
@@ -1444,8 +1505,11 @@ int updateCourse(Course &course){
                                 break;
                             }
                         }
+                        if(value2 == 0){
+                            course.teachers.push_back(value);
+                            change = true;
+                        }
                     }
-                    if(value2 == 0) course.teachers.push_back(value);
                 }while(value != "=");
                 break;
 
@@ -1470,6 +1534,7 @@ int updateCourse(Course &course){
                 if(value2 != 0) break;
 
                 course.prerequisites.erase(course.prerequisites.begin() + index);
+                change = true;
                 break;
 
             case 'F':
@@ -1493,6 +1558,7 @@ int updateCourse(Course &course){
                 if(value2 != 0) break;
 
                 course.teachers.erase(course.teachers.begin() + index);
+                change = true;
                 break;
         }
 
@@ -1528,6 +1594,7 @@ int deleteCourse(int index){
     }
 
     cout<<endl<<"The course "<<courseCode<<" is deleted successfully!!";
+    change = true;
     return 0;
 }
 
@@ -1749,7 +1816,7 @@ string statusToWords(char status){
     return "\0";
 }
 
-void statistical_report(){
+int statistical_report(){
     vector<int> graduationYears;
     string department;
 
@@ -1763,29 +1830,40 @@ void statistical_report(){
             }
         }
     }
-
     cout<<endl<<"Please enter department (Enter 'All' to select all department): ";
     cin.ignore();
     getline(cin, department);
     department = strToUpper(department);
 
+    cout<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl<<endl;
+
     cout<<endl<<"Statistical Report of "<<department<<" department"<<endl;
 
-    cout<<endl<<endl<<"______________________________________";
-    cout<<endl<<"|Batch|Passed|Warned|Failed|Withdraws|\n";
+    cout<<endl<<"________________________________________________";
+    cout<<endl<<"| Batch | Passed | Warned | Failed | Withdraws |\n";
+    cout<<"|----------------------------------------------|\n";
     for(int i = 1; i <= 5; ++i){
-        cout<<"|  "<<i<<"  |  "<<howMany(i, department, 'P')<<"  |  "<<howMany(i, department, '!')<<"  |  "<<howMany(i, department, 'D')<<"  |   "<<howMany(i, department, 'W')<<"    |\n";
-        cout<<"--------------------------------------\n";
+        cout<<"|   "<<i<<"   |    "<<howMany(i, department, 'P')<<"   |    "<<howMany(i, department, '!')<<"   |    "<<howMany(i, department, 'D')<<"   |     "<<howMany(i, department, 'W')<<"     |\n";
+        cout<<"|----------------------------------------------|\n";
     }
 
-    cout<<endl<<endl<<"Number of non-graduates: "<<howMany(6, department)<<endl;
+    cout<<endl<<endl<<"Number of New Students: "<<howMany(1, department, 'N');
+    cout<<"\nNumber of non-graduates: "<<howMany(6, department)<<endl;
 
-    cout<<endl<<endl<<"____________________________________";
-    cout<<endl<<"|Graduating Year|Number of Students|\n";
+    if(graduationYears.size() == 0){
+        cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+        return 0;
+    }
+    cout<<endl<<endl<<"________________________________________";
+    cout<<endl<<"| Graduating Year | Number of Students |";
+    cout<<endl<<"|--------------------------------------|\n";
     for(int i = 0; i < graduationYears.size(); ++i){
-        cout<<"|     "<<graduationYears[i]<<"      |       "<<howMany(graduationYears[i], department)<<"        |\n";
-        cout<<"------------------------------------\n";
+        cout<<"|      "<<graduationYears[i]<<"       |        "<<howMany(graduationYears[i], department)<<"         |\n";
+        cout<<"|--------------------------------------|\n";
     }
+
+    cout<<endl<<endl<<"----------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*--------------------*----------"<<endl;
+    return 0;
 }
 
 int howMany(int year, string department, char status){
@@ -1818,7 +1896,7 @@ int howMany(int year, string department, char status){
 
 int save(){
     char choice;
-    cout<<endl<<"Do you want to save changes you made to the database?\nEnter 'Y' to save changes and any other character to dismiss changes\nYour choice: ";
+    cout<<endl<<"Do you want to save all unsaved changes to the database?\nEnter 'Y' to save changes and any other character not to\nYour choice: ";
     cin>>choice;
     choice = toupper(choice);
 
@@ -1883,14 +1961,15 @@ int save(){
 
     studFile.close();
     coursesFile.close();
-    cout<<endl<<"File successfully saved!!";
+    change = false;
+    cout<<endl<<"File successfully saved!!"<<endl;
     return 0;
 }
 
 int readFromFile(){
     fstream studentFile, courseFile;
-    studentFile.open("Students", ios::in);
     courseFile.open("Courses", ios::in);
+    studentFile.open("Students", ios::in);
 
     if(!studentFile.is_open() || !courseFile.is_open()){
         cout<<endl<<"Couldn\'t open file(s)!!";
@@ -1898,48 +1977,8 @@ int readFromFile(){
     }
 
     int size, size1;
-    Student stud;
     Course course;
-
-    studentFile.seekg(0, ios::beg);
-    studentFile>>size;
-    studentFile.seekg(1, ios::cur);
-
-    for(int i = 0; i < size; ++i){
-        Student stud;
-
-        getline(studentFile, stud.name[0], '|');
-        getline(studentFile, stud.name[1], '|');
-        getline(studentFile, stud.name[2], '|');
-        getline(studentFile, stud.id, '|');
-        studentFile>>stud.semester;
-        studentFile.seekg(1, ios::cur);
-        getline(studentFile, stud.department, '|');
-        getline(studentFile, stud.password);
-        studentFile>>size1;
-        studentFile.seekg(1, ios::cur);
-
-        for(int j = 0; j < size1; ++j){
-            StudCourse myCourse;
-
-            getline(studentFile, myCourse.name, '|');
-            getline(studentFile, myCourse.code, '|');
-            studentFile>>myCourse.crHr;
-            studentFile.seekg(1, ios::cur);
-            studentFile>>myCourse.grade;
-            studentFile.seekg(1, ios::cur);
-            studentFile>>myCourse.year;
-            studentFile.seekg(1, ios::cur);
-            studentFile>>myCourse.semester;
-            studentFile.seekg(1, ios::cur);
-            getline(studentFile, myCourse.teacher);
-
-            stud.myCourse.push_back(myCourse);
-        }
-
-        students.push_back(stud);
-        refresh(students[i]);
-    }
+    Student stud;
 
     courseFile.seekg(0, ios::beg);
     courseFile>>size;
@@ -1983,9 +2022,49 @@ int readFromFile(){
         courses.push_back(course);
     }
 
-    studentFile.close();
+    studentFile.seekg(0, ios::beg);
+    studentFile>>size;
+    studentFile.seekg(1, ios::cur);
+
+    for(int i = 0; i < size; ++i){
+        Student stud;
+
+        getline(studentFile, stud.name[0], '|');
+        getline(studentFile, stud.name[1], '|');
+        getline(studentFile, stud.name[2], '|');
+        getline(studentFile, stud.id, '|');
+        studentFile>>stud.semester;
+        studentFile.seekg(1, ios::cur);
+        getline(studentFile, stud.department, '|');
+        getline(studentFile, stud.password);
+        studentFile>>size1;
+        studentFile.seekg(1, ios::cur);
+
+        for(int j = 0; j < size1; ++j){
+            StudCourse myCourse;
+
+            getline(studentFile, myCourse.name, '|');
+            getline(studentFile, myCourse.code, '|');
+            studentFile>>myCourse.crHr;
+            studentFile.seekg(1, ios::cur);
+            studentFile>>myCourse.grade;
+            studentFile.seekg(1, ios::cur);
+            studentFile>>myCourse.year;
+            studentFile.seekg(1, ios::cur);
+            studentFile>>myCourse.semester;
+            studentFile.seekg(1, ios::cur);
+            getline(studentFile, myCourse.teacher);
+
+            stud.myCourse.push_back(myCourse);
+        }
+
+        students.push_back(stud);
+        refresh(students[i]);
+    }
+
     courseFile.close();
-    cout<<endl<<"File successfully read!!";
+    studentFile.close();
+    cout<<endl<<"File successfully read!!"<<endl;
     return 0;
 }
 
