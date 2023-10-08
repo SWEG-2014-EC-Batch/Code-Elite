@@ -1141,7 +1141,7 @@ void refresh(Student &stud, bool changePassword){
         stud.status = 'N';
     }
     else if(stud.status != 'W' && stud.status != 'G'){
-        if(stud.cgpa < 1.5){
+        if(stud.cgpa < 1.75){
             stud.status = 'D';
         }
         else if(stud.cgpa < 2){
@@ -2173,40 +2173,43 @@ int readFromFile(){
     int size, size1;
     Course course;
     Student stud;
+    string ch;
 
     courseFile.seekg(0, ios::beg);
     courseFile>>size;
-    courseFile.seekg(1, ios::cur);
-
+    getline(courseFile, ch, '\n');
     for(int i = 0; i < size; ++i){
         Course course;
 
-        courseFile.seekg(1, ios::cur);
+        getline(courseFile, ch, '\n');
         getline(courseFile, course.name, '|');
-        getline(courseFile, course.code, '|');
-        courseFile>>course.crHr;
-        courseFile.seekg(1, ios::cur);
-        courseFile>>course.year;
-        courseFile.seekg(1, ios::cur);
-        courseFile>>course.semester;
-        courseFile.seekg(1, ios::cur);
+        getline(courseFile, course.code, '|'); 
+        getline(courseFile, ch, '|');
+        course.crHr = stoi(ch);
+        
+        getline(courseFile, ch, '|');
+        course.year = stoi(ch);
+        
+        getline(courseFile, ch, '|');
+        course.semester = stoi(ch);
+        
         getline(courseFile, course.department, '|');
         course.department = strToUpper(course.department);
-        courseFile>>course.currentTeacher;
-        courseFile.seekg(1, ios::cur);
-        courseFile>>size1;
-        courseFile.seekg(1, ios::cur);
-
+        getline(courseFile, ch, '\n');
+        course.currentTeacher = stoi(ch);
+       
+        getline(courseFile, ch, '|');
+        size1 = stoi(ch);
+        
         for(int j = 0; j < size1; ++j){
             string prerequisite;
             getline(courseFile, prerequisite, '|');
             course.prerequisites.push_back(prerequisite);
         }
 
-        courseFile.seekg(1, ios::cur);
-        courseFile>>size1;
-        courseFile.seekg(1, ios::cur);
-
+        getline(courseFile, ch, '|');
+        size1 = stoi(ch);
+        
         for(int j = 0; j < size1; ++j){
             string teacher;
             getline(courseFile, teacher, '|');
@@ -2218,8 +2221,8 @@ int readFromFile(){
 
     studentFile.seekg(0, ios::beg);
     studentFile>>size;
-    studentFile.seekg(1, ios::cur);
-
+    getline(studentFile, ch, '\n');
+        
     for(int i = 0; i < size; ++i){
         Student stud;
 
@@ -2227,27 +2230,29 @@ int readFromFile(){
         getline(studentFile, stud.name[1], '|');
         getline(studentFile, stud.name[2], '|');
         getline(studentFile, stud.id, '|');
-        studentFile>>stud.semester;
-        studentFile.seekg(1, ios::cur);
+        getline(studentFile, ch, '|');
+        stud.semester = stoi(ch);
         getline(studentFile, stud.department, '|');
-        getline(studentFile, stud.password);
-        studentFile>>size1;
-        studentFile.seekg(1, ios::cur);
+        getline(studentFile, stud.password, '\n');
+        getline(studentFile, ch, '\n');
+        size1 = stoi(ch);
+        
 
         for(int j = 0; j < size1; ++j){
             StudCourse myCourse;
-
+            
             getline(studentFile, myCourse.name, '|');
             getline(studentFile, myCourse.code, '|');
-            studentFile>>myCourse.crHr;
-            studentFile.seekg(1, ios::cur);
-            studentFile>>myCourse.grade;
-            studentFile.seekg(1, ios::cur);
-            studentFile>>myCourse.year;
-            studentFile.seekg(1, ios::cur);
-            studentFile>>myCourse.semester;
-            studentFile.seekg(1, ios::cur);
-            getline(studentFile, myCourse.teacher);
+            getline(studentFile, ch, '|');
+            myCourse.crHr = stoi(ch);
+            getline(studentFile, ch, '|');
+            myCourse.grade = stof(ch);
+            getline(studentFile, ch, '|');
+            myCourse.year = stoi(ch);
+            getline(studentFile, ch, '|');
+            myCourse.semester = stoi(ch);
+           
+            getline(studentFile, myCourse.teacher, '\n');
 
             stud.myCourse.push_back(myCourse);
         }
