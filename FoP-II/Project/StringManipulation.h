@@ -33,12 +33,14 @@ string strToLower(string str){
 
 string strToUpper(string str){
     int length = stringlength(str);
-    char *upper = new char[length];
+    char *upper = new char[length + 1];
 
     for(int i=0; i<length; ++i){
         if(str[i]>='a' && str[i]<='z') upper[i] = str[i] - 32;
         else upper[i] = str[i];
     }
+    upper[length] = '\0';
+
 
     return upper;
 }
