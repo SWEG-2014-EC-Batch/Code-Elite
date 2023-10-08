@@ -50,7 +50,7 @@ struct Student{
     vector<StudCourse> myCourse;
 };
 
-bool change;
+bool change = false;
 vector<Student> students;  // student vector
 vector<Course> courses;  // course vector
 
@@ -1389,6 +1389,10 @@ int updateStudent(Student &stud){
             break;
             
         case 'F':
+            if(stud.status == 'G'){
+                cout<<endl<<"The student has already graduated!!";
+                break;
+            }
             cout<<endl<<"The student's current status is '"<<statusToWords(stud.status)<<"' ";
             cout<<endl<<"Enter 'W' for withdrawal and 'C' for readmission: ";
             cin>>value2;
