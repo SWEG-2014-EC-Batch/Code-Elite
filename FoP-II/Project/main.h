@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctype.h>
+#include <string>
 
 #include <vector>
 #include <map>
@@ -1183,7 +1184,7 @@ int promote(Student &stud){
         bool canGraduate = true;
 
         for(int i = 0; canGraduate && i < courses.size(); ++i){
-            if(courses[i].department == stud.department){
+            if(courses[i].department == stud.department || courses[i].department == "ALL"){
                 cout<<endl<<"course "<<i;
                 for(int j = 0; j < stud.myCourse.size(); ++j){
                     if((courses[i].code == stud.myCourse[j].code) && stud.myCourse[j].status == 'P') break;
