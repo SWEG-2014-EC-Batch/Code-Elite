@@ -21,12 +21,13 @@ int stringlength(string str){
 
 string strToLower(string str){
     int length = stringlength(str);
-    char *lower = new char[length];
+    char *lower = new char[length + 1];
 
     for(int i=0; i<length; ++i){
         if(str[i]>='A' && str[i]<='Z') lower[i] = str[i] + 32;
         else lower[i] = str[i];
     }
+    lower[length] = '\0';
 
     return lower;
 }
@@ -49,10 +50,12 @@ string strConcat(string str1, string str2, int length1, int length2){
     if(length1 == -1 || length1 > stringlength(str1)) length1 = stringlength(str1);
     if(length2 == -1 || length2 > stringlength(str2)) length2 = stringlength(str2);
     
-    char *result = new char[length1 + length2];
+    char *result = new char[length1 + length2 + 1];
 
     for(int i = 0; i < length1; ++i) result[i] = str1[i];
     for(int i = 0; i < length2; ++i) result[length1 + i] = str2[i];
+
+    result[length1 + length2] = '\0';
 
     return result;
 }
