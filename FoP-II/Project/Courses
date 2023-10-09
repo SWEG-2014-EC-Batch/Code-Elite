@@ -1,17 +1,110 @@
-5
+36
 
-Economics|Econ2009|3|2|2|ALL|0
-1|Math1010|
-2|ta|tb|
-General Math|Math1010|3|1|1|ALL|0
+Logic and Critical Thinking|Phil1009|3|1|1|ALL|0
 0|
-2|t1|t2|
-Digital logic Design|EEng2004|3|2|2|SOFTWARE ENGINEERING|0
-1|Math1010|
-3|tb|tc|td|
-Fundamentals of Programming I|SWEG1004|3|2|1|SOFTWARE ENGINEERING|0
+2|Tc|Td|
+General Psychology|Psyc1011|3|1|1|ALL|0
 0|
-1|chere|
-Last Course|SWEG5002|6|5|2|SOFTWARE ENGINEERING|0
+4|Te|Tf|Tg|Th|
+Communicative English Language Skills I|FlEn1003|3|1|1|ALL|0
 0|
-1|tz
+3|Tg|Th|Ti|
+Geography of Ethiopia and the horn |GeEs1005|3|1|1|ALL|0
+0|
+3|Ti|Tj|Tk|
+Mathematics for Natural Science|Math1007|3|1|1|ALL|0
+0|
+3|Tk|Tl|Tm|
+General Physics|Phys1001|3|1|1|ALL|0
+0|
+2|Tm|Tn|
+Communicative English Language Skill II|FlEn1004|3|1|2|ALL|0
+1|FlEn1003|
+1|To|
+Moral and Civic Education|MCiE1012|2|1|2|ALL|0
+0|
+1|Tp|
+Inclusiveness|Incl1010|2|1|2|ALL|0
+0|
+1|Tq|
+Social Anthropology|Anth1002|2|1|2|ALL|0
+0|
+1|Tr|
+Entrepreneurship for Engineers|Entr1106|3|1|2|ALL|0
+0|
+1|Ts|
+Emerging Technology for Engineers|EmTe1108|3|1|2|ALL|0
+0|
+1|Tt|
+Applied Mathematics IB|Math1014|4|1|2|ALL|0
+1|Math1007|
+1|Tu|
+Introduction to Software Engineering and Computing|SWEG2101|4|2|1|SOFTWARE ENGINEERING|0
+1|EmTe1108|
+1|Tv|
+Discrete Mathematics for Software Engineering|SWEG2105|3|2|1|SOFTWARE ENGINEERING|0
+0|
+2|Tk|Tm|
+History of Ethiopia and the Horn|Hist2002|3|2|1|SOFTWARE ENGINEERING|0
+0|
+1|Tk|
+Global Trend|GLTr2011|2|2|1|SOFTWARE ENGINEERING|0
+0|
+1|Ti|
+Probability and Statistics|Stat2091|3|2|1|SOFTWARE ENGINEERING|0
+0|
+1|Tjj|
+Economics|Econ2109|3|2|2|SOFTWARE ENGINEERING|0
+1|Math1007|
+1|Tl|
+Digital Logic Design|EEng2004|3|2|2|SOFTWARE ENGINEERING|0
+0|
+1|Tm|
+Database Systems|SWEG2108|4|2|2|SOFTWARE ENGINEERING|0
+1|SWEG2101|
+1|Ty|
+Data Structure and Algorithms|SWEG3103|4|3|1|SOFWARE ENGINEERING|0
+0|
+1|Tx|
+Computer Organization and Architecture|SWEG3105|4|3|1|SOFTWARE ENGINEERING|0
+0|
+2|Tz|Tx|
+Internet Programming I|SWEG3107|3|3|1|SOFTWARE ENGINEERING|0
+1|SWEG2101|
+2|Tz|Ty|
+Internet Programming II|SWEG3102|3|3|2|SOFTWARE ENGINEERING|0
+2|SWEG3107|SWEG2101|
+2|Td|Tm|
+Fundamentals of Programming I|SWEG2103|3|2|1|SOFTWARE ENGINEERING|0
+0|
+2|chere|eleni|
+Fundamentals of Programming II|SWEG2102|3|2|2|SOFTWARE ENGINEERING|0
+1|SWEG2103|
+2|chere|eleni|
+Data Communication and Computer Network|SWEG2106|4|2|2|SOFTWARE ENGINEERING|0
+0|
+1|Tx|
+Introduction to Artificial Inteligence|SWEG4107|3|4|1|SOFTWARE ENGINEERING|0
+0|
+2|Tn|Tx|
+Principle of Compiler Design|SWEG4101|3|4|1|SOFTWARE ENGINEERING|0
+0|
+1|Ty|
+Embedded Systems|SWEG4102|3|4|2|SOFTWARE ENGINEERING|0
+0|
+1|Ta|
+Software Project managment|SWEG4104|3|4|2|SOFTWARE ENGINEERING|0
+0|
+1|Ts|
+Software Configuration managment|SWEG5103|3|5|1|SOFTWARE ENGINEERING|0
+0|
+2|Tp|Tq|
+Introduction to Big Data Analytics|SWEG5201|3|5|1|SOFTWARE ENGINEERING|0
+0|
+1|Tl|
+Software Evolution and Maintenance|SWEG5106|3|5|2|SOFTWARE ENGINEERING|0
+0|
+1|Tw|
+Advanced Programming|SWEG3108|4|3|2|SOFTWARE ENGINEERING|0
+0|
+3|Tj|Tk|Th|

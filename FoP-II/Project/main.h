@@ -1279,6 +1279,7 @@ int recordNewStudent(){
     stud.semester = 1;
     students.push_back(stud);
 
+    refresh(students[students.size() - 1], true);
     for(int i = 0; i < courses.size(); ++i){
         if(courses[i].year == 1 && courses[i].semester == 1){
             registration(courses[i].code, students[students.size() - 1]);
@@ -1286,7 +1287,6 @@ int recordNewStudent(){
     }
 
     change = true;
-    refresh(students[students.size() - 1], true);
 
     return 0;
 }
